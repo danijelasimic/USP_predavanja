@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uvod u strukture podataka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap&subset=latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+<style>
+:root {
+  --tekst: #1f2328;
+  --blago: #5b6470;
+  --akcenat: #1d5fa8;
+  --element: #dbe8f7;
+  --rezerva: #eef0f3;
+  --novo: #ffe2a8;
+  --lose: #c0392b;
+  --dobro: #1f7a3f;
+  --pitanje-bg: #fdf3dc;
+  --odgovor-bg: #e6f3ea;
+  --r-main-font: "Source Sans 3", system-ui, sans-serif;
+  --r-heading-font: "Source Sans 3", system-ui, sans-serif;
+  --r-code-font: "JetBrains Mono", ui-monospace, monospace;
+  --r-main-color: var(--tekst);
+  --r-heading-color: var(--tekst);
+  --r-link-color: var(--akcenat);
+  --r-main-font-size: 34px;
+}
+body { background: #fff; }
+.reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; letter-spacing: 0; }
+.reveal h2 { font-size: 1.45em; margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.05em; color: var(--blago); }
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal .slides section { text-align: left; }
+.reveal .centar { text-align: center; }
+.reveal pre { width: 100%; font-size: 0.74em; box-shadow: none; border: 1px solid #d8dde3; border-radius: 6px; }
+.reveal pre code { background: #fff; max-height: 560px; padding: 14px 18px; line-height: 1.45; }
+.reveal code { font-family: var(--r-code-font); }
+.reveal :not(pre) > code { background: #eef1f5; padding: 0 0.2em; border-radius: 4px; font-size: 0.9em; }
+.reveal .hljs-ln-numbers { color: #aab; padding-right: 0.8em !important; }
+.reveal pre table, .reveal table.hljs-ln { font-size: 1em !important; margin: 0 !important; }
+.reveal pre table td { padding: 0 !important; border: 0 !important; }
+.reveal .mali pre { font-size: 0.6em; }
+.reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: 0.22 !important; }
+.reveal .hljs.has-highlights tr.highlight-line td.hljs-ln-code { background: #fff1bf; }
+.reveal .mali pre code { line-height: 1.3; max-height: 600px; }
+.reveal h2 code { background: none !important; padding: 0 !important; font-size: 0.95em; }
+.reveal .sitno { font-size: 0.7em; color: var(--blago); }
+.reveal .oznaka { display: inline-block; font-size: 0.55em; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 0.15em 0.6em; border-radius: 999px; margin-bottom: 0.4em; }
+.reveal .oznaka.p { background: #f5d48a; color: #5a3d00; }
+.reveal .oznaka.o { background: #a9dbb9; color: #0f4424; }
+.reveal .opcije { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4em 1.2em; list-style: none; margin: 0.6em 0 0; padding: 0; }
+.reveal .opcije li { background: #fff; border: 2px solid #e2c98f; border-radius: 8px; padding: 0.3em 0.6em; font-size: 0.85em; }
+.reveal .opcije li b { color: var(--akcenat); margin-right: 0.4em; }
+.reveal .tacno { color: var(--dobro); font-weight: 700; }
+.reveal .netacno { color: var(--lose); font-weight: 700; }
+.reveal .okvir { border-left: 6px solid var(--akcenat); background: #f3f7fc; padding: 0.5em 0.8em; border-radius: 0 8px 8px 0; }
+.reveal .dve { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; align-items: start; }
+.reveal .f { font-size: 0.9em; }
+.reveal table { font-size: 0.85em; margin: 0.4em 0; }
+.reveal table th { border-bottom: 2px solid #bbb; }
+.reveal table td, .reveal table th { padding: 0.25em 0.8em; }
+
+/* mapa casa */
+.reveal .mapa { list-style: none; padding: 0; margin: 0.4em 0 0; }
+.reveal .mapa li { padding: 0.35em 0.7em; margin: 0.25em 0; border-radius: 8px; color: #9aa1a9; border: 2px solid transparent; }
+.reveal .mapa li.sad { color: var(--tekst); border-color: var(--akcenat); background: #f3f7fc; font-weight: 600; }
+.reveal .mapa li.gotovo { color: var(--blago); }
+.reveal .mapa li.gotovo::before { content: "\2713  "; color: var(--dobro); }
+
+/* niz kao kutije */
+.reveal .niz { display: flex; gap: 0; margin: 0.3em 0 1.1em; align-items: flex-end; }
+.reveal .niz .ime { font-family: var(--r-code-font); font-size: 0.6em; color: var(--blago); width: 6.5em; align-self: center; }
+.reveal .c { position: relative; width: 74px; height: 64px; border: 2px solid #3d4650; margin-left: -2px;
+  display: flex; align-items: center; justify-content: center; font-family: var(--r-code-font); font-size: 0.72em;
+  background: var(--element); }
+.reveal .c[data-i]::after { content: attr(data-i); position: absolute; bottom: -1.5em; font-size: 0.6em; color: var(--blago); }
+.reveal .c.r { background: repeating-linear-gradient(45deg, var(--rezerva), var(--rezerva) 6px, #e1e4e8 6px, #e1e4e8 12px); color: #9aa1a9; }
+.reveal .c.n { background: var(--novo); }
+.reveal .c.x { background: #fff; border-style: dashed; color: #c3c8ce; }
+.reveal .c.z { background: #3d4650; color: #fff; }
+.reveal .c.prazno { background: #fff; }
+.reveal .opis { font-size: 0.7em; color: var(--blago); margin-top: -0.4em; }
+
+/* grafikon */
+.reveal svg.graf, .reveal svg.kop { width: 100%; height: auto; max-height: 330px; }
+.reveal svg.graf .jeftino { fill: #9fbfe3; }
+.reveal svg.graf .skupo { fill: var(--lose); }
+.reveal svg.graf .osa { stroke: #3d4650; stroke-width: 2; }
+.reveal svg.graf .lab { font: 14px "JetBrains Mono", monospace; fill: #3d4650; text-anchor: middle; }
+
+/* dijagram kopiranja */
+.reveal svg.kop text { font: 18px "JetBrains Mono", monospace; fill: #1f2328; }
+.reveal svg.kop .obj { fill: #f3f7fc; stroke: #1d5fa8; stroke-width: 2; }
+.reveal svg.kop .cel { fill: #dbe8f7; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .celr { fill: #eef0f3; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .str { stroke: #1d5fa8; stroke-width: 2.5; fill: none; marker-end: url(#vrh); }
+.reveal svg.kop .str.lose { stroke: #c0392b; marker-end: url(#vrh2); }
+.reveal svg.kop .naslov { font: 700 20px "Source Sans 3", sans-serif; }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+<section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
+<textarea data-template>
+
+<!-- .slide: class="centar" -->
+# Uvod u strukture podataka
+
+### Glava 1 · Uvod — i kako ćemo raditi ovog semestra
+
+---
+
+## Plan
+
+<ol class="mapa">
+<li class="sad">1. Upoznavanje i pravila igre</li>
+<li>2. Šta je struktura podataka</li>
+<li>3. Invarijanta i cena operacija — i probni test</li>
+</ol>
+
+---
+
+## Opet zajedno
+
+<div class="dve">
+<div>
+
+**Danijela Simić**, docent
+
+- `danijela.simic [at] matf.bg.ac.rs`
+- kabinet 716, Studentski trg 16, 4. sprat
+- konsultacije: najavite se mejlom — u kabinetu ili online
+
+</div>
+<div class="okvir">
+
+Pišite i kad nešto ne razumete, i kad mislite da je nešto na slajdu pogrešno.
+
+Obe stvari će se dešavati.
+
+</div>
+</div>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Za zagrevanje</span>
+
+```cpp
+std::vector<int> v = {5, 1, 4};
+std::set<int> s(v.begin(), v.end());
+s.insert(4);
+for (int x : s)
+    std::cout << x << ' ';
+```
+
+<ul class="opcije">
+<li><b>A</b><code>5 1 4 4</code></li>
+<li><b>B</b><code>5 1 4</code></li>
+<li><b>C</b><code>1 4 5</code></li>
+<li><b>D</b><code>1 4 4 5</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `1 4 5`
+
+`std::set` čuva elemente **uređene** i **bez ponavljanja**.
+
+<div class="okvir">Kako to postiže — i koliko ga to košta — upravo je tema ovog kursa.</div>
+
+---
+
+## Šta već znate
+
+<div class="dve">
+<div>
+
+### 1. semestar
+
+C++ i standardna biblioteka:
+`vector`, `stack`, `queue`, `map`, `set`…
+
+Koristili ste ih.
+
+</div>
+<div>
+
+### 2. semestar
+
+Sortiranje, binarna pretraga, BFS/DFS, bektreking…
+
+Znate da ocenite koliko algoritam košta.
+
+</div>
+</div>
+
+---
+
+## Šta je novo
+
+Do sada ste bili **korisnik**: `#include <vector>` — i radi.
+
+Sada ste **autor**:
+
+- kako je struktura napravljena iznutra
+- koliko koštaju njene operacije — i **zašto**
+- kako da napravite strukturu koje u STL-u nema
+
+---
+
+## Zašto, kad STL već postoji?
+
+- Da izaberete pravu: `vector` ili `deque`? `map` ili `unordered_map`?
+- Da razumete kada je program spor — i zbog čega.
+- Da napravite svoju strukturu kada gotova ne odgovara problemu.
+- Da procenite kod koji je napisao neko drugi — ili **nešto** drugo.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Niz `v` ima milion elemenata. Koja operacija **nije** brza, tj. nije $O(1)$?
+
+<ul class="opcije">
+<li><b>A</b><code>v[500000]</code></li>
+<li><b>B</b><code>v.back()</code></li>
+<li><b>C</b><code>v.insert(v.begin(), x)</code></li>
+<li><b>D</b><code>v.size()</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — da bi `x` stao na početak, svih milion elemenata se pomera za jedno mesto: $O(n)$.
+
+<div class="okvir"><code>vector</code> <em>podržava</em> umetanje na početak. To ne znači da je ono jeftino.</div>
+
+<p class="sitno">Zašto je baš tako napravljen: glava 3.</p>
+
+---
+
+## Jedna glava — jedna nedelja (1/2)
+
+| glava | tema | u STL-u |
+| --- | --- | --- |
+| 1 | Uvod | — |
+| 2 | Memorijski model | pokazivači, `new` / `delete` |
+| 3 | Dinamički niz | `vector` |
+| 4 | Povezane liste | `list`, `forward_list` |
+| 5 | Stek | `stack` |
+| 6 | Red i dek | `queue`, `deque` |
+| 7 | Hip i red sa prioritetom | `priority_queue` |
+
+---
+
+## Jedna glava — jedna nedelja (2/2)
+
+| glava | tema | u STL-u |
+| --- | --- | --- |
+| 8 | Binarna stabla | — |
+| 9 | Binarna stabla pretrage | osnova za `set`, `map` |
+| 10 | Balansirana stabla | `set`, `map` |
+| 11 | Heš tabele | `unordered_set`, `unordered_map` |
+| 12 | Izbor strukture u praksi | sve zajedno |
+| 13 | Napredne strukture | — |
+
+<p class="sitno">Dodatak A: pregled C++-a — za čitanje, po potrebi.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Šta se nalazi „ispod haube" `std::map`?
+
+<ul class="opcije">
+<li><b>A</b>heš tabela</li>
+<li><b>B</b>uređen niz</li>
+<li><b>C</b>balansirano binarno stablo</li>
+<li><b>D</b>povezana lista</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — u g++ je to crveno-crno stablo (glava 10).
+
+- A je `std::unordered_map` (glava 11).
+- B: brza pretraga, ali sporo umetanje — videćemo već danas zašto.
+- D: sve bi bilo $O(n)$.
+
+---
+
+## Kako izgleda jedna nedelja
+
+| | predavanja | vežbe |
+| --- | --- | --- |
+| ko | ja | asistent |
+| računar | pomalo | da |
+| šta | slike, ideje, cena operacija, pitanja, deo implementacije | implementacija, zadaci |
+| priprema za | usmeni (teorijski) deo | praktični deo |
+
+Knjiga *Uvod u strukture podataka*: detalji, dokazi i ceo kod. Slajdovi su skraćena verzija.
+
+---
+
+## Pitanja na času
+
+<span class="oznaka p">Pitanje</span> — razmislite, pa glasajte dizanjem ruke
+
+<span class="oznaka o">Odgovor</span> — odmah posle, sa objašnjenjem
+
+- Pogrešne opcije nisu nasumične: to su česte zablude.
+- Pogrešiti ovde ne košta ništa. Na ispitu košta.
+- „Zamka" i „Za razmišljanje" — za one kojima je lako.
+
+---
+
+## Vežbe: prve tri nedelje
+
+1. Alati: VS Code, debager, prevođenje; ulaz i izlaz
+2. Pokazivači
+3. Klase, šabloni, funktori
+
+C++ koji vam treba za celu godinu — na predavanjima ga ne ponavljamo, koristimo ga.
+
+---
+
+## Okruženje
+
+```text
+g++ -std=c++17 -Wall -Wextra -g program.cpp -o program
+```
+
+```text
+g++ -std=c++17 -Wall -Wextra -g -fsanitize=address,undefined program.cpp -o program
+```
+
+- `-Wall -Wextra` — čitajte upozorenja, često su to greške
+- sanitajzer hvata greške sa memorijom dok program radi
+- sa MinGW-om na Windows-u sanitajzer ne radi — o tome na vežbama
+
+---
+
+## Obaveze: 110 poena
+
+<svg viewBox="0 0 1100 150" class="kop" role="img" aria-label="Podela poena: testovi 10, praktični 50, usmeni 50">
+<rect x="20" y="20" width="96" height="70" class="celr"/><text style="font-size:28px" x="68" y="62" text-anchor="middle">10</text>
+<rect x="116" y="20" width="480" height="70" class="cel"/><text style="font-size:28px" x="356" y="62" text-anchor="middle">praktični · 50</text>
+<rect x="596" y="20" width="480" height="70" class="obj"/><text style="font-size:28px" x="836" y="62" text-anchor="middle">usmeni · 50</text>
+<text style="font-size:28px" x="68" y="125" text-anchor="middle">testovi</text>
+<text style="font-size:28px" x="356" y="125" text-anchor="middle">računar, C++ zadaci</text>
+<text style="font-size:28px" x="836" y="125" text-anchor="middle">papir, u ispitnom roku</text>
+</svg>
+
+- **Praktični deo** — 4 zadatka, 3 sata, automatsko testiranje
+- **Usmeni deo** — 20 pitanja, 1 sat, na papiru
+- **Testovi na predavanjima** (nije obavezno) — kratka pitanja iz pređenog gradiva; dodatni poeni preko 100
+
+---
+
+## Praktični deo: dva puta
+
+<svg viewBox="0 0 1100 250" class="kop" role="img" aria-label="Kolokvijumi menjaju polovine praktičnog dela">
+<defs><marker id="vrh1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d5fa8"/></marker></defs>
+<rect x="100" y="20" width="450" height="70" class="cel"/><text style="font-size:28px" x="325" y="62" text-anchor="middle">prva polovina · 25</text>
+<rect x="550" y="20" width="450" height="70" class="cel"/><text style="font-size:28px" x="775" y="62" text-anchor="middle">druga polovina · 25</text>
+<rect x="145" y="160" width="360" height="70" rx="8" class="obj"/><text style="font-size:28px" x="325" y="202" text-anchor="middle">1. kolokvijum · 25</text>
+<rect x="595" y="160" width="360" height="70" rx="8" class="obj"/><text style="font-size:28px" x="775" y="202" text-anchor="middle">2. kolokvijum · 25</text>
+<path d="M325,158 L325,96" stroke="#1d5fa8" stroke-width="2.5" fill="none" marker-end="url(#vrh1)"/>
+<path d="M775,158 L775,96" stroke="#1d5fa8" stroke-width="2.5" fill="none" marker-end="url(#vrh1)"/>
+</svg>
+
+- Kolokvijumi **zamenjuju** pismeni deo ispita
+- Prvi kolokvijum: prva kolokvijumska nedelja
+- Drugi kolokvijum: druga kolokvijumska nedelja, kraj semestra
+- Po 2 zadatka, isti format kao na ispitu
+- Nisu obavezni
+- Može se izaći na jedan, a drugi polagati u okviru ispitnog roka
+- Potrebno je **u zbiru** imati preko praga (25 poena)
+
+---
+
+## Kada je predmet položen?
+
+<div class="okvir">
+
+Sva tri uslova:
+
+1. praktični deo: bar **25** od 50
+2. usmeni deo: bar **25** od 50
+3. ukupno: bar **51**
+
+</div>
+
+Testovi sa predavanja ulaze u zbir.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+**Ana**: praktični 40, usmeni 20, testovi 10. Da li je položila?
+
+<ul class="opcije">
+<li><b>A</b>Da — ima 70 poena</li>
+<li><b>B</b>Ne — usmeni je ispod polovine</li>
+<li><b>C</b>Da — testovi nadoknađuju razliku</li>
+<li><b>D</b>Ne — zbir je ispod 51</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — zbir od 70 je dovoljan, ali usmeni (20) je ispod 25.
+
+Testovi povećavaju zbir, ali ne popravljaju pojedinačni deo.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+**Marko**: 1. kolokvijum 15, 2. kolokvijum 12, usmeni 25, testovi 0.
+
+<ul class="opcije">
+<li><b>A</b>Ne — 2. kolokvijum je ispod polovine</li>
+<li><b>B</b>Ne — zbir je ispod 51</li>
+<li><b>C</b>Da — 52 poena</li>
+<li><b>D</b>Ne — usmeni mora biti preko 25</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — praktični je 15 + 12 = 27 ≥ 25, usmeni 25 ≥ 25, ukupno 52 ≥ 51.
+
+Za praktični deo se gleda zbir oba kolokvijuma.
+
+<p class="sitno">Tesno, ali prolazi. Ne preporučujem kao strategiju.</p>
+
+---
+
+## Koliko važe poeni?
+
+- Poeni sa kolokvijuma važe **cele godine**.
+- Izlazak na odgovarajući deo ispita ih **poništava** — računa se novi rezultat.
+- Položen deo (praktični ili usmeni) važi do kraja godine ili do ponovnog izlaska na taj deo.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+**Jelena** ima 20 poena sa 1. kolokvijuma. U junu izlazi na prvu polovinu praktičnog dela i osvaja 12. Koliko joj se računa za prvu polovinu?
+
+<ul class="opcije">
+<li><b>A</b>20 — računa se bolji rezultat</li>
+<li><b>B</b>12</li>
+<li><b>C</b>16 — prosek</li>
+<li><b>D</b>32 — zbir</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — izlaskom na taj deo ispita kolokvijum se poništava.
+
+<div class="okvir">Izlazite da popravite — kada ste sigurni da ćete popraviti.</div>
+
+---
+
+## Testovi na predavanjima
+
+- Kratka pitanja, iz onoga što smo radili na predavanjima.
+- Ukupno do **10** dodatnih poena.
+
+Danas, na kraju časa: **probni test**. 
+
+Test je uvek *na kraju neke oblasti, nekad na kraju časa, nekad u sredini, a nekad na početku.*
+
+**Bodovanje:**
+
+- Studenti se sortiraju prema osvnojenom broju poena i prema vremenu kada su odgovor predali.
+- U zavisnosti od rezultate, poeni se najčeće raspoređuju na sledeći način:
+  - 1 poen dobija prvih 25% studenata
+  - 0.75 poena dobija drugih 25% studenata
+  - 0.5 poena dobija trećih 25% studenata
+  - 0.25 poena dobija četvrtih 25% studenata
+  - 0 poena dobijaju studenti koji nemaju tačnih odgovora
+
+---
+
+## Gde je šta
+
+**usp.matf.bg.ac.rs**
+
+| stranica | šta tamo ima |
+| --- | --- |
+| O kursu | tehničke informacije za ovu godinu |
+| Obaveze studenata | poeni i pravila — ovo što smo upravo prošli |
+| Vežbe | materijali sa vežbi svih asistenata |
+| Obaveštenja | rokovi, termini, izmene — pratite redovno |
+
+**Asistenti:**
+- Andrija Urošević
+- Matija Lojović
+- ?
+
+---
+
+## Blok 1 — ukratko
+
+- Strukture ste koristili; sada učimo kako su napravljene i koliko koštaju.
+- Jedna glava nedeljno; predavanja bez računara, vežbe na računaru.
+- 110 poena: testovi 10 + praktični 50 + usmeni 50.
+- Praktični deo može i kroz dva kolokvijuma.
+- Prolaz: bar pola na svakom delu i bar 51 ukupno.
+
+---
+
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Upoznavanje i pravila igre</li>
+<li class="sad">2. Šta je struktura podataka</li>
+<li>3. Invarijanta i cena operacija — i probni test</li>
+</ol>
+
+---
+
+## Pokrećemo: koliko ima različitih brojeva?
+
+```cpp
+std::vector<int> videni;
+for (int x : a)
+    if (std::find(videni.begin(), videni.end(), x) == videni.end())
+        videni.push_back(x);
+std::cout << videni.size();
+```
+
+Ovakav kod lako dobijete od jezičkog modela (eng. *large language model*).
+
+Tačan je. Za 1000 slučajnih brojeva: **0,00015 s**.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Isti program, ali za 100 000 brojeva — **100 puta** više brojeva.
+
+Koliko će duže da radi?
+
+<ul class="opcije">
+<li><b>A</b>oko 100 puta duže</li>
+<li><b>B</b>oko 10 000 puta duže</li>
+<li><b>C</b>isto</li>
+<li><b>D</b>oko 2 puta duže</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — izmereno: **1,1 s**, oko 7000 puta duže.
+
+100 puta više brojeva, a svaki se traži kroz do 100 puta duži `videni`: $O(n^2)$.
+
+<p class="sitno">7000, a ne tačno 10 000: merenje vrlo kratkih vremena nije precizno.</p>
+
+---
+
+## Dopisujemo: isti podaci, drugi raspored
+
+```cpp
+std::sort(a.begin(), a.end());
+int k = 0;
+for (int i = 0; i < n; ++i)
+    if (i == 0 || a[i] != a[i - 1])
+        ++k;
+```
+
+U uređenom nizu jednaki brojevi su susedi.
+
+Za 100 000 brojeva: **0,0075 s** — oko 150 puta brže, isti odgovor.
+
+---
+
+## Šta je struktura podataka?
+
+<div class="okvir">
+
+**Struktura podataka** (eng. *data structure*): organizacija podataka **zajedno sa** operacijama koje se nad njima izvode.
+
+</div>
+
+- Isti podaci mogu se organizovati na više načina.
+- Od organizacije zavisi koliko operacije koštaju — vreme i memorija.
+- I kada kod piše alat, na vama je da procenite da li odgovara količini podataka i načinu upotrebe.
+
+---
+
+## Primer: kolekcija celih brojeva
+
+| operacija | značenje |
+| --- | --- |
+| `dodaj(x)` | dodaje jedno pojavljivanje broja `x` |
+| `sadrzi(x)` | da li postoji bar jedno pojavljivanje `x`? |
+| `obrisi(x)` | uklanja jedno pojavljivanje `x`, ako postoji |
+
+- Isti broj sme da se pojavi više puta.
+- Redosled dodavanja nije važan.
+
+<p class="sitno">U STL-u je to otprilike <code>std::multiset&lt;int&gt;</code>.</p>
+
+---
+
+## Dve organizacije, ista kolekcija
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span class="c" data-i="0">12</span><span class="c" data-i="1">4</span><span class="c" data-i="2">9</span><span class="c" data-i="3">4</span><span class="c" data-i="4">17</span><span class="c" data-i="5">6</span>
+</div>
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span class="c" data-i="0">4</span><span class="c" data-i="1">4</span><span class="c" data-i="2">6</span><span class="c" data-i="3">9</span><span class="c" data-i="4">12</span><span class="c" data-i="5">17</span>
+</div>
+
+Isti brojevi, `4` dvaput u oba. Promenjena je organizacija, a ne sadržaj.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Koliko elemenata **najviše** moramo da pregledamo da bismo utvrdili da broja `8` nema — u neuređenom, odnosno u uređenom nizu od 6 elemenata?
+
+<ul class="opcije">
+<li><b>A</b>6 i 6</li>
+<li><b>B</b>6 i 3</li>
+<li><b>C</b>3 i 3</li>
+<li><b>D</b>6 i 1</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — 6 i 3.
+
+- Neuređen: nijedan pregledan element ne govori ništa o ostalima — gledamo sve.
+- Uređen: binarna pretraga, svako poređenje odbacuje polovinu.
+
+Za milion elemenata: **milion** naspram **20**.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Neuređen: `sadrzi(9)`
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span data-id="a0" class="c x" data-i="0">12</span><span data-id="a1" class="c x" data-i="1">4</span><span data-id="a2" class="c n" data-i="2">9</span><span data-id="a3" class="c" data-i="3">4</span><span data-id="a4" class="c" data-i="4">17</span><span data-id="a5" class="c" data-i="5">6</span>
+</div>
+
+Redom, dok ne naiđemo: nađen posle 3 provere.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Neuređen: `sadrzi(8)`
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span data-id="a0" class="c x" data-i="0">12</span><span data-id="a1" class="c x" data-i="1">4</span><span data-id="a2" class="c x" data-i="2">9</span><span data-id="a3" class="c x" data-i="3">4</span><span data-id="a4" class="c x" data-i="4">17</span><span data-id="a5" class="c x" data-i="5">6</span>
+</div>
+
+Nema ga — ali to znamo tek posle **svih** 6 provera. $O(n)$
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `sadrzi(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="b0" class="c" data-i="0">4</span><span data-id="b1" class="c" data-i="1">4</span><span data-id="b2" class="c" data-i="2">6</span><span data-id="b3" class="c n" data-i="3">9</span><span data-id="b4" class="c" data-i="4">12</span><span data-id="b5" class="c" data-i="5">17</span>
+</div>
+
+Sredina: `9 > 8` — sve od `9` udesno otpada.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `sadrzi(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="b0" class="c" data-i="0">4</span><span data-id="b1" class="c n" data-i="1">4</span><span data-id="b2" class="c" data-i="2">6</span><span data-id="b3" class="c x" data-i="3">9</span><span data-id="b4" class="c x" data-i="4">12</span><span data-id="b5" class="c x" data-i="5">17</span>
+</div>
+
+Sredina levog dela: `4 < 8` — otpada i sve levo.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `sadrzi(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="b0" class="c x" data-i="0">4</span><span data-id="b1" class="c x" data-i="1">4</span><span data-id="b2" class="c n" data-i="2">6</span><span data-id="b3" class="c x" data-i="3">9</span><span data-id="b4" class="c x" data-i="4">12</span><span data-id="b5" class="c x" data-i="5">17</span>
+</div>
+
+`6 < 8` — nije ostalo ništa. Nema ga, posle **3** provere. $O(\log n)$
+
+---
+
+## `sadrzi` u uređenom nizu
+
+```cpp
+bool sadrzi(const std::vector<int>& a, int x)
+{
+    std::size_t l = 0, d = a.size();     // trazimo u [l, d)
+    while (l < d) {
+        std::size_t s = l + (d - l) / 2;
+        if (a[s] == x)
+            return true;
+        if (a[s] < x)
+            l = s + 1;
+        else
+            d = s;
+    }
+    return false;
+}
+```
+
+<p class="sitno">Binarna pretraga iz algoritmike. U STL-u: <code>std::binary_search</code>.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Istu funkciju pozovemo nad **neuređenim** nizom:
+
+```cpp
+std::vector<int> a = {12, 4, 9, 4, 17, 6};
+std::cout << sadrzi(a, 12);
+```
+
+<ul class="opcije">
+<li><b>A</b><code>1</code></li>
+<li><b>B</b><code>0</code></li>
+<li><b>C</b>beskonačna petlja</li>
+<li><b>D</b>program pada</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `0`, iako je `12` prvi element.
+
+Sredina je `4 < 12`, pa se odbacuje leva polovina — baš ona u kojoj je `12`.
+
+Od pet različitih brojeva u nizu, ova pretraga nalazi samo `4` i `6`.
+
+<div class="okvir">Poređenje sa jednim elementom govori nešto o ostalima <b>samo</b> ako je niz uređen.</div>
+
+---
+
+## Dodavanje u neuređen niz
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span class="c" data-i="0">12</span><span class="c" data-i="1">4</span><span class="c" data-i="2">9</span><span class="c" data-i="3">4</span><span class="c" data-i="4">17</span><span class="c" data-i="5">6</span><span class="c n" data-i="6">8</span>
+</div>
+
+`dodaj(8)`: upiši na prvo slobodno mesto iza poslednjeg — $O(1)$.
+
+<p class="sitno">„Ako slobodno mesto postoji." Šta kad ne postoji: glava 3.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span class="c" data-i="0">4</span><span class="c" data-i="1">4</span><span class="c" data-i="2">6</span><span class="c" data-i="3">9</span><span class="c" data-i="4">12</span><span class="c" data-i="5">17</span><span class="c r" data-i="6"></span>
+</div>
+
+`dodaj(8)` — koliko elemenata mora da se pomeri?
+
+<ul class="opcije">
+<li><b>A</b>0 — upiše se na kraj</li>
+<li><b>B</b>1</li>
+<li><b>C</b>3</li>
+<li><b>D</b>6</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `9`, `12` i `17`, svaki za jedno mesto udesno.
+
+Binarna pretraga brzo nađe **gde** ide `8`, ali ne pravi mesto za njega.
+
+Najgori slučaj, `dodaj(1)`: pomera se svih $n$. $O(n)$
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `dodaj(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="u0" class="c">4</span><span data-id="u1" class="c">4</span><span data-id="u2" class="c">6</span><span data-id="u3" class="c">9</span><span data-id="u4" class="c">12</span><span data-id="u5" class="c">17</span><span data-id="ur" class="c r"></span>
+</div>
+
+Mesto za `8` je između `6` i `9`.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `dodaj(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="u0" class="c">4</span><span data-id="u1" class="c">4</span><span data-id="u2" class="c">6</span><span class="c prazno"></span><span data-id="u3" class="c">9</span><span data-id="u4" class="c">12</span><span data-id="u5" class="c">17</span>
+</div>
+
+Veći elementi idu udesno — počev od poslednjeg.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `dodaj(8)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="u0" class="c">4</span><span data-id="u1" class="c">4</span><span data-id="u2" class="c">6</span><span class="c n">8</span><span data-id="u3" class="c">9</span><span data-id="u4" class="c">12</span><span data-id="u5" class="c">17</span>
+</div>
+
+Tek onda upis. Niz je ponovo uređen.
+
+---
+
+## `dodaj` u uređeni niz
+
+```cpp [3|4-8|9]
+void dodaj(std::vector<int>& a, int x)
+{
+    a.push_back(x);                     // jedno mesto vise
+    std::size_t i = a.size() - 1;
+    while (i > 0 && a[i - 1] > x) {
+        a[i] = a[i - 1];
+        --i;
+    }
+    a[i] = x;
+}
+```
+
+<p class="sitno">U STL-u isto radi <code>a.insert(std::upper_bound(a.begin(), a.end(), x), x)</code>.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+`obrisi(4)` u neuređenom nizu `12 4 9 4 17 6`. Dva predloga:
+
+- pomeri sve iza prve `4` ulevo: `12 9 4 17 6`
+- na mesto prve `4` stavi poslednji element: `12 6 9 4 17`
+
+<ul class="opcije">
+<li><b>A</b>ispravno je samo pomeranje</li>
+<li><b>B</b>ispravna je samo zamena</li>
+<li><b>C</b>oba su ispravna</li>
+<li><b>D</b>nijedno — moraju se ukloniti obe <code>4</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — oba niza predstavljaju **istu kolekciju**: `12, 9, 4, 17, 6`.
+
+Redosled nema značenje, pa ga smemo promeniti.
+
+- pomeranje: $O(n)$
+- zamena poslednjim: $O(1)$, kad je element pronađen
+
+D: `obrisi(x)` uklanja **jedno** pojavljivanje.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Neuređen: `obrisi(4)` zamenom
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span data-id="d0" class="c" data-i="0">12</span><span data-id="d1" class="c n" data-i="1">4</span><span data-id="d2" class="c" data-i="2">9</span><span data-id="d3" class="c" data-i="3">4</span><span data-id="d4" class="c" data-i="4">17</span><span data-id="d5" class="c" data-i="5">6</span>
+</div>
+
+Pronađemo prvu `4`…
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Neuređen: `obrisi(4)` zamenom
+
+<div class="niz">
+<span class="ime">neuređen</span>
+<span data-id="d0" class="c" data-i="0">12</span><span data-id="d5" class="c" data-i="1">6</span><span data-id="d2" class="c" data-i="2">9</span><span data-id="d3" class="c" data-i="3">4</span><span data-id="d4" class="c" data-i="4">17</span><span class="c x" data-i="5"></span>
+</div>
+
+…i na njeno mesto premestimo poslednji element. Veličina 5.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `obrisi(4)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="o0" class="c n" data-i="0">4</span><span data-id="o1" class="c" data-i="1">4</span><span data-id="o2" class="c" data-i="2">6</span><span data-id="o3" class="c" data-i="3">9</span><span data-id="o4" class="c" data-i="4">12</span><span data-id="o5" class="c" data-i="5">17</span>
+</div>
+
+Zamena poslednjim? `17 4 6 9 12` — poredak pokvaren.
+
+---
+
+<!-- .slide: data-auto-animate -->
+## Uređen: `obrisi(4)`
+
+<div class="niz">
+<span class="ime">uređen</span>
+<span data-id="o1" class="c" data-i="0">4</span><span data-id="o2" class="c" data-i="1">6</span><span data-id="o3" class="c" data-i="2">9</span><span data-id="o4" class="c" data-i="3">12</span><span data-id="o5" class="c" data-i="4">17</span><span class="c x" data-i="5"></span>
+</div>
+
+Zato: svi iza obrisanog — jedno mesto ulevo. $O(n)$
+
+---
+
+## Dva dela svake izmene
+
+| | pronalaženje | uklanjanje / umetanje |
+| --- | :---: | :---: |
+| neuređen | $O(n)$ | $O(1)$ |
+| uređen | $O(\log n)$ | $O(n)$ |
+
+<div class="okvir">Uređenost ubrzava prvi deo, a drugi čak otežava.</div>
+
+---
+
+## Ukupna cena
+
+| operacija | neuređen niz | uređen niz |
+| --- | :---: | :---: |
+| `sadrzi(x)` | <span class="fragment">$O(n)$</span> | <span class="fragment">$O(\log n)$</span> |
+| `dodaj(x)` | <span class="fragment">$O(1)$</span> | <span class="fragment">$O(n)$</span> |
+| `obrisi(x)` | <span class="fragment">$O(n)$</span> | <span class="fragment">$O(n)$</span> |
+
+<p class="fragment">Iste operacije, isto značenje — različita cena.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Uređen niz je na početku `4 6 9`. Izvršimo redom:
+
+`dodaj(8)`, `dodaj(4)`, `obrisi(6)`, `dodaj(10)`
+
+<ul class="opcije">
+<li><b>A</b><code>4 4 8 9 10</code></li>
+<li><b>B</b><code>4 8 9 10</code></li>
+<li><b>C</b><code>4 8 9 4 10</code></li>
+<li><b>D</b><code>4 4 9 8 10</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span> — `4 4 8 9 10`
+
+- B: ovo nije `set` — isti broj sme dvaput.
+- C: novi element ne ide na kraj, već na svoje mesto.
+- D: posle **svake** operacije niz mora biti uređen.
+
+---
+
+## Pokrećemo: 100 000 brojeva
+
+`std::find` u neuređenom naspram `std::binary_search` u uređenom nizu, po 100 000 upita.
+
+<table>
+<tr><th></th><th>neuređen</th><th>uređen</th></tr>
+<tr><td>100 000 × <code>sadrzi</code></td><td>2,26 s</td><td>0,012 s</td></tr>
+<tr class="fragment"><td>100 000 × <code>dodaj</code></td><td>0,0007 s</td><td>0,22 s</td></tr>
+</table>
+
+<p class="fragment">Koja je bolja? Zavisi od toga šta se radi <b>češće</b>.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Koju organizaciju biste izabrali?
+
+1. **Imenik**: milion brojeva, menja se jednom dnevno, pretražuje se stalno.
+2. **Dnevnik događaja**: upisuje se stalno, pretražuje se retko, kad nešto pukne.
+
+<ul class="opcije">
+<li><b>A</b>uređen, uređen</li>
+<li><b>B</b>uređen, neuređen</li>
+<li><b>C</b>neuređen, uređen</li>
+<li><b>D</b>neuređen, neuređen</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span>
+
+1. Mnogo upita, malo izmena: brza pretraga isplati pomeranja.
+2. Mnogo upisa, malo upita: održavanje poretka je posao koji se ne isplati.
+
+<div class="okvir">Strukturu ne biramo po tome koje operacije nudi, nego po ceni operacija koje su za problem važne i koliko se često izvršavaju.</div>
+
+---
+
+## Blok 2 — ukratko
+
+- Struktura podataka = organizacija + operacije; od organizacije zavisi cena.
+- Ista kolekcija: neuređen ili uređen niz — isto značenje, različita cena.
+- Uređenost: pretraga $O(\log n)$, ali umetanje i brisanje $O(n)$.
+- Neuređen niz: dodavanje $O(1)$, brisanje zamenom poslednjim.
+- Izbor zavisi od toga koje se operacije rade često.
+
+<p class="sitno">U knjizi: glava 1, odeljak „Podaci, operacije i organizacija".</p>
+
+---
+
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Upoznavanje i pravila igre</li>
+<li class="gotovo">2. Šta je struktura podataka</li>
+<li class="sad">3. Invarijanta i cena operacija — i probni test</li>
+</ol>
+
+---
+
+## Dva pogleda na strukturu
+
+<div class="dve">
+<div>
+
+### Šta
+
+Šta operacije **znače**: `obrisi(x)` uklanja jedno pojavljivanje `x`.
+
+To vidi korisnik — *apstraktni tip podataka* (eng. *abstract data type*).
+
+</div>
+<div>
+
+### Kako
+
+Kako su podaci smešteni i kako se operacije **ostvaruju**: pomeranjem ili zamenom.
+
+To vidi autor — *reprezentacija* (eng. *representation*).
+
+</div>
+</div>
+
+---
+
+## Isto „šta", drugo „kako" — u STL-u
+
+```cpp
+std::stack<int> s1;                     // iznutra: std::deque
+std::stack<int, std::vector<int>> s2;   // iznutra: std::vector
+```
+
+- Ista ponuda: `push`, `pop`, `top`, `empty`.
+- Drugačija organizacija ispod.
+- Kod koji koristi stek ne mora da zna razliku.
+
+<p class="sitno">Pogled unapred: glave 5 i 6.</p>
+
+---
+
+## Reprezentacija
+
+<div class="dve">
+<div>
+
+**Uzastopno** u memoriji
+
+<div class="niz">
+<span class="c">4</span><span class="c">6</span><span class="c">9</span><span class="c r"></span>
+</div>
+
+Treba znati: gde je blok, koliko ima elemenata, koliko mesta.
+
+</div>
+<div>
+
+**Čvorovi** povezani pokazivačima
+
+<svg viewBox="0 0 520 110" class="kop" role="img" aria-label="Tri čvora povezana pokazivačima">
+<defs><marker id="vrh2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d5fa8"/></marker></defs>
+<rect x="10" y="25" width="70" height="60" class="cel"/><rect x="80" y="25" width="40" height="60" class="celr"/><text x="34" y="62">4</text><circle cx="100" cy="55" r="5" fill="#1d5fa8"/>
+<rect x="190" y="25" width="70" height="60" class="cel"/><rect x="260" y="25" width="40" height="60" class="celr"/><text x="214" y="62">6</text><circle cx="280" cy="55" r="5" fill="#1d5fa8"/>
+<rect x="370" y="25" width="70" height="60" class="cel"/><rect x="440" y="25" width="40" height="60" class="celr"/><text x="394" y="62">9</text><text x="452" y="62">/</text>
+<path d="M100,55 L186,55" stroke="#1d5fa8" stroke-width="2.5" fill="none" marker-end="url(#vrh2a)"/>
+<path d="M280,55 L366,55" stroke="#1d5fa8" stroke-width="2.5" fill="none" marker-end="url(#vrh2a)"/>
+</svg>
+
+Pogled unapred: glave 2 i 4.
+
+</div>
+</div>
+
+Uz raspored idu i **pravila**: koji deo bloka je u upotrebi, a kod uređenog niza — i poredak.
+
+---
+
+## Invarijanta strukture
+
+<div class="okvir">
+
+**Invarijanta** (eng. *invariant*): uslovi pod kojima reprezentacija opisuje ispravno stanje strukture.
+
+Mora da važi **od stvaranja objekta i između svake dve operacije**.
+
+</div>
+
+**Invarijanta uređenog niza**: svaki element, osim poslednjeg, manji je od sledećeg ili mu je jednak.
+
+Važi i za prazan niz i za niz sa jednim elementom.
+
+---
+
+## Ugovor svake operacije
+
+<svg viewBox="0 0 1100 200" class="kop" role="img" aria-label="Invarijanta važi između operacija">
+<line x1="20" y1="80" x2="1080" y2="80" stroke="#3d4650" stroke-width="2"/>
+<rect x="30" y="45" width="190" height="70" rx="8" class="obj"/><text style="font-size:28px" x="125" y="87" text-anchor="middle">stvaranje</text>
+<rect x="320" y="45" width="190" height="70" rx="8" class="obj"/><text style="font-size:28px" x="415" y="87" text-anchor="middle">dodaj(8)</text>
+<rect x="610" y="45" width="190" height="70" rx="8" class="obj"/><text style="font-size:28px" x="705" y="87" text-anchor="middle">sadrzi(9)</text>
+<rect x="900" y="45" width="170" height="70" rx="8" class="obj"/><text style="font-size:28px" x="985" y="87" text-anchor="middle">obrisi(4)</text>
+<circle cx="270" cy="80" r="20" fill="#a9dbb9"/><text style="font-size:28px" x="270" y="87" text-anchor="middle">✓</text>
+<circle cx="560" cy="80" r="20" fill="#a9dbb9"/><text style="font-size:28px" x="560" y="87" text-anchor="middle">✓</text>
+<circle cx="855" cy="80" r="20" fill="#a9dbb9"/><text style="font-size:28px" x="855" y="87" text-anchor="middle">✓</text>
+<text style="font-size:28px" x="560" y="160" text-anchor="middle">✓ = invarijanta važi</text>
+</svg>
+
+- Operacija **sme da pretpostavi** da invarijanta važi kad počne.
+- Operacija **mora da je uspostavi** pre nego što se završi.
+
+---
+
+## Tokom operacije sme da ne važi
+
+Usred `dodaj(8)` nad `4 4 6 9 12 17`:
+
+<div class="niz">
+<span class="ime">usred</span>
+<span class="c">4</span><span class="c">4</span><span class="c">6</span><span class="c">9</span><span class="c">12</span><span class="c n">12</span><span class="c">17</span>
+</div>
+
+Dve `12`, nema `8` — ovo nije ni stara ni nova kolekcija.
+
+<div class="okvir">Korisnik ponovo dobija strukturu tek kad je invarijanta uspostavljena.</div>
+
+---
+
+## Poznato iz algoritmike: invarijanta petlje
+
+| | petlje | strukture |
+| --- | --- | --- |
+| važi | pri svakoj proveri uslova | od stvaranja, između operacija |
+| uspostavlja je | kod pre petlje | konstruktor |
+| održava je | telo petlje | svaka operacija |
+| sme da ne važi | usred tela | usred operacije |
+
+Razlika: operacije nad strukturom se pozivaju **proizvoljnim redosledom**.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Koji niz **ne** zadovoljava invarijantu uređenog niza?
+
+<ul class="opcije">
+<li><b>A</b>prazan niz</li>
+<li><b>B</b><code>7</code></li>
+<li><b>C</b><code>3 3 5</code></li>
+<li><b>D</b><code>3 5 4</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">D</span> — `5` je veće od sledećeg elementa.
+
+- A, B: nema para susednih elemenata, uslov važi „prazno".
+- C: jednakost je dozvoljena — kolekcija sme da ima ponavljanja.
+
+---
+
+## Preduslov ili invarijanta?
+
+```cpp
+std::binary_search(v.begin(), v.end(), x);
+```
+
+Za `binary_search` uređenost je **preduslov**: brine o njoj onaj ko poziva.
+
+U strukturi „uređen niz" ista osobina je **invarijanta**: brine o njoj sama struktura.
+
+- Korisnik ne uređuje niz pred svaki `sadrzi(x)`.
+- Zato `dodaj` i `obrisi` moraju da čuvaju poredak.
+
+---
+
+## Ko sme da dira reprezentaciju?
+
+```cpp
+std::vector<int> ur = {4, 4, 6, 9, 12, 17};
+ur[0] = 100;               // niko nas ne sprecava
+std::cout << sadrzi(ur, 100);
+```
+
+Poredak je pokvaren — `sadrzi` od tog trenutka može da laže.
+
+<div class="okvir">Struktura može da garantuje invarijantu samo ako se sve izmene rade kroz njene operacije: <b>skrivena reprezentacija</b>.</div>
+
+<p class="sitno">Kako se to radi u C++-u (<code>private</code>): vežbe, 3. nedelja, i glava 3.</p>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+std::set<int> s = {4, 6, 9};
+*s.begin() = 100;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>s</code> je <code>100 6 9</code></li>
+<li><b>B</b><code>s</code> je <code>6 9 100</code> — set se sam preuredi</li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b>prevodi se, ali program pada</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — *assignment of read-only location*
+
+Elementi skupa su konstantni: promena bi pokvarila poredak, pa je `set` ni ne dozvoljava.
+
+Promena vrednosti u skupu = `erase` staru, `insert` novu — kroz operacije.
+
+<div class="okvir">STL čuva svoju invarijantu tako što ni ne prevodi kod koji bi je narušio.</div>
+
+---
+
+## Pišemo zajedno: `obrisi` u neuređenom nizu
+
+Imamo gotove `dodaj` i `sadrzi` za obe organizacije.
+
+Pišemo `neuredjen::obrisi(a, x)` — brisanje zamenom poslednjim.
+
+<p class="sitno"><code>neuredjen::</code> i <code>uredjen::</code> su prostori imena — kao <code>std::</code> — da bi obe verzije mogle da se zovu isto.</p>
+
+---
+
+## `obrisi` u neuređenom nizu
+
+```cpp [3|4|5-6|7]
+void obrisi(std::vector<int>& a, int x)
+{
+    for (std::size_t i = 0; i < a.size(); ++i)
+        if (a[i] == x) {
+            a[i] = a.back();
+            a.pop_back();
+            return;
+        }
+}
+```
+
+Ako `x` nema — petlja prođe do kraja i niz ostaje isti.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Šta ako zaboravimo `a.pop_back();`?
+
+```cpp
+std::vector<int> a = {12, 4, 9, 4, 17, 6};
+obrisi(a, 4);
+// ispis elemenata a
+```
+
+<ul class="opcije">
+<li><b>A</b><code>12 6 9 4 17</code></li>
+<li><b>B</b><code>12 6 9 4 17 6</code></li>
+<li><b>C</b><code>12 9 4 17 6</code></li>
+<li><b>D</b><code>12 4 9 4 17 6</code></li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `12 6 9 4 17 6`
+
+`4` je nestala, ali veličina nije smanjena: sada u kolekciji ima **dve** šestice.
+
+Prevodi se, ne pada, i deluje skoro ispravno — najgora vrsta greške.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Zamka</span>
+
+Ispravan `neuredjen::obrisi` pozovemo nad **uređenim** nizom:
+
+```cpp
+std::vector<int> u = {4, 4, 6, 9, 12, 17};
+neuredjen::obrisi(u, 4);
+std::cout << uredjen::sadrzi(u, 17);
+```
+
+<ul class="opcije">
+<li><b>A</b><code>1</code></li>
+<li><b>B</b><code>0</code></li>
+<li><b>C</b>program pada</li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `u` je sada `17 4 6 9 12`.
+
+`17` jeste u nizu, ali binarna pretraga ide desno od sredine i ne nalazi ga.
+
+<div class="okvir">Kad je invarijanta narušena, operacije počnu da lažu — a prevodilac ne zna ništa o invarijanti.</div>
+
+---
+
+## Podsetnik: $O$-notacija
+
+<div class="f">
+$f(n) = O(g(n))$ ako postoje konstante $c > 0$ i $n_0$ takve da je
+$$f(n) \le c \cdot g(n) \quad \text{za svako } n \ge n_0.$$
+</div>
+
+- $n$ je broj elemenata u strukturi.
+- To je **gornja** granica — navodimo najmanju koja važi.
+- Ako nije rečeno drugačije: **najgori slučaj**.
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Koja su tvrđenja tačna?
+
+1. $3n + 5 = O(n)$
+2. $n = O(n^2)$
+3. $n^2 = O(n)$
+
+<ul class="opcije">
+<li><b>A</b>samo 1</li>
+<li><b>B</b>1 i 2</li>
+<li><b>C</b>sva tri</li>
+<li><b>D</b>samo 2</li>
+</ul>
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span>
+
+- 1: $3n + 5 \le 4n$ za $n \ge 5$.
+- 2: tačno — $O$ je samo gornja granica. Ali za pretragu neuređenog niza pišemo $O(n)$, ne $O(n^2)$.
+- 3: nijedna konstanta $c$ ne pomaže kad $n > c$.
+
+---
+
+## Šta sve ocenjujemo
+
+- **Najgori slučaj** — podrazumevano.
+- **Prosečan slučaj** — kod heš tabela (glava 11).
+- **Amortizovana cena** — kroz niz operacija (glava 3).
+- **Memorija** — i ono što troši sama organizacija: pokazivači, prazan kapacitet.
+
+<div class="okvir">Isti red složenosti ≠ ista brzina. Raspored u memoriji i keš imaju veliki uticaj (glava 4).</div>
+
+---
+
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Za razmišljanje</span>
+
+Neuređen niz: brzo `dodaj`, sporo `sadrzi`.
+Uređen niz: brzo `sadrzi`, sporo `dodaj`.
+
+Da li postoji organizacija u kojoj su **obe** operacije brze — recimo $O(\log n)$?
+
+---
+
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+**Postoji** — ali ne kao niz.
+
+- balansirano stablo pretrage: sve tri operacije $O(\log n)$ — `std::multiset` (glava 10)
+- heš tabela: prosečno $O(1)$ — `std::unordered_multiset` (glava 11)
+
+<div class="okvir">Do kraja semestra znaćete kako se prave — i šta plaćaju za tu brzinu.</div>
+
+---
+
+## Glava 1 — ukratko
+
+1. Struktura podataka = organizacija + operacije; organizacija određuje cenu.
+2. Biramo prema ceni operacija koje su **važne i česte**.
+3. „Šta" (značenje operacija) i „kako" (reprezentacija) su odvojeni.
+4. Invarijanta važi od stvaranja i između svake dve operacije; svaka operacija je čuva.
+5. Skrivena reprezentacija: samo operacije smeju da menjaju strukturu.
+
+<p class="sitno">U knjizi: glava 1 u celini.</p>
+
+---
+
+<!-- .slide: class="centar" -->
+## Probni test
+
+10 pitanja, sa telefona, ~10 minuta.
+
+
+---
+
+## Sledeće nedelje
+
+- **Predavanja**: memorijski model — gde žive promenljive, šta je pokazivač, šta radi `new`.
+- **Vežbe**: alati i ulaz/izlaz.
+
+<div class="okvir">Za sledeći put: pročitajte glavu 1 — sve što smo danas preskočili je tamo.</div>
+
+</textarea>
+</section>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+  width: 1280,
+  height: 760,
+  margin: 0.05,
+  hash: true,
+  slideNumber: "c/t",
+  transition: "fade",
+  autoAnimateDuration: 0.8,
+  plugins: [RevealMarkdown, RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+</body>
+</html>

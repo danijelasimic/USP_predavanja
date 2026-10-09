@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uvod u strukture podataka</title>
+<style>
+  :root { --bg:#fafaf7; --fg:#222; --muted:#777; --line:#e3e1d8; --acc:#1f5f8b; --card:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#17181a; --fg:#e8e8e6; --muted:#9a9a96; --line:#2c2e31; --acc:#7db7e0; --card:#1f2124; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:32px 16px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 28px; }
+  .cas { display:grid; grid-template-columns:2.2rem 1fr; gap:0 12px; align-items:start;
+         background:var(--card); border:1px solid var(--line); border-radius:10px;
+         padding:12px 16px; margin-bottom:10px; }
+  .cas.nema { opacity:.55; }
+  .br { font-weight:600; color:var(--muted); font-size:1.1rem; padding-top:2px; }
+  .naslov { font-weight:600; }
+  .linkovi { margin-top:6px; display:flex; flex-wrap:wrap; gap:6px 10px; }
+  .linkovi a { color:var(--acc); text-decoration:none; border:1px solid var(--line);
+               border-radius:999px; padding:2px 12px; font-size:.9rem; }
+  .linkovi a:hover { border-color:var(--acc); }
+  .uskoro { color:var(--muted); font-size:.9rem; margin-top:4px; }
+  .test { display:flex; justify-content:space-between; align-items:center; gap:12px;
+          background:var(--acc); color:var(--bg); text-decoration:none;
+          border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:1.05rem; }
+  .test[hidden] { display:none; }
+  .test:hover { filter:brightness(1.1); }
+  footer { margin-top:32px; color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Uvod u strukture podataka</h1>
+  <p class="sub">Slajdovi sa predavanja i rezultati provera znanja.</p>
+  <a id="test" class="test" hidden><b>Test</b><span>Otvori test →</span></a>
+  <div id="lista"></div>
+  <footer id="dno"></footer>
+</main>
+
+<script>
+/* ============================================================
+   JEDINO MESTO KOJE MENJAŠ.
+   1) TEST: link ka testu koji je trenutno otključan (prikazuje se
+      na vrhu stranice). Prazan string "" = traka se ne prikazuje.
+   2) CASOVI: za svaki čas popuni polja (ostavi "" dok nije spremno):
+        slajdovi  - putanja do slajdova   (npr. "slajdovi/slajdovi_03.html")
+        rezultati - bilo koji URL (Google Sheet, PDF, stranica...)
+   ============================================================ */
+const TEST = {
+  url: "",
+  naslov: "Test",   // npr. "Test: dinamički niz"
+};
+
+const CASOVI = [
+  { br: 1,  naslov: "Uvod",                          slajdovi: "", rezultati: "" },
+  { br: 2,  naslov: "Memorijski model",              slajdovi: "", rezultati: "" },
+  { br: 3,  naslov: "Dinamički niz",                 slajdovi: "", rezultati: "" },
+  { br: 4,  naslov: "Povezane liste",                slajdovi: "", rezultati: "" },
+  { br: 5,  naslov: "Stek",                          slajdovi: "", rezultati: "" },
+  { br: 6,  naslov: "Red i dek",                     slajdovi: "", rezultati: "" },
+  { br: 7,  naslov: "Hip i red sa prioritetom",      slajdovi: "", rezultati: "" },
+  { br: 8,  naslov: "Binarna stabla",                slajdovi: "", rezultati: "" },
+  { br: 9,  naslov: "Binarno stablo pretrage (BST)", slajdovi: "", rezultati: "" },
+  { br: 10, naslov: "Balansirana stabla",            slajdovi: "", rezultati: "" },
+  { br: 11, naslov: "Heš tabele",                    slajdovi: "", rezultati: "" },
+  { br: 12, naslov: "Izbor strukture u praksi",      slajdovi: "", rezultati: "" },
+  { br: 13, naslov: "Napredne strukture",            slajdovi: "", rezultati: "" },
+];
+
+/* Opciono: linkovi na dnu (knjiga, zadaci sa vežbi...) */
+const DNO = [
+  // { tekst: "Knjiga", url: "https://..." },
+  // { tekst: "Zadaci sa vežbi", url: "https://..." },
+];
+/* ============================================================ */
+
+if (TEST.url) {
+  const t = document.getElementById("test");
+  t.hidden = false;
+  t.href = TEST.url;
+  t.target = "_blank";
+  t.rel = "noopener";
+  t.querySelector("b").textContent = TEST.naslov || "Test";
+}
+
+const lista = document.getElementById("lista");
+for (const c of CASOVI) {
+  const ima = c.slajdovi || c.rezultati;
+  const el = document.createElement("div");
+  el.className = "cas" + (ima ? "" : " nema");
+
+  const br = document.createElement("div");
+  br.className = "br";
+  br.textContent = c.br;
+
+  const telo = document.createElement("div");
+  const n = document.createElement("div");
+  n.className = "naslov";
+  n.textContent = c.naslov;
+  telo.appendChild(n);
+
+  if (ima) {
+    const l = document.createElement("div");
+    l.className = "linkovi";
+    const dodaj = (tekst, url) => {
+      if (!url) return;
+      const a = document.createElement("a");
+      a.href = url; a.textContent = tekst;
+      if (/^https?:/.test(url)) { a.target = "_blank"; a.rel = "noopener"; }
+      l.appendChild(a);
+    };
+    dodaj("Slajdovi", c.slajdovi);
+    dodaj("Rezultati provere", c.rezultati);
+    telo.appendChild(l);
+  } else {
+    const u = document.createElement("div");
+    u.className = "uskoro";
+    u.textContent = "Uskoro";
+    telo.appendChild(u);
+  }
+  el.append(br, telo);
+  lista.appendChild(el);
+}
+
+const dno = document.getElementById("dno");
+DNO.forEach((d, i) => {
+  if (i) dno.append(" · ");
+  const a = document.createElement("a");
+  a.href = d.url; a.textContent = d.tekst; a.target = "_blank"; a.rel = "noopener";
+  a.style.color = "var(--acc)";
+  dno.appendChild(a);
+});
+</script>
+</body>
+</html>

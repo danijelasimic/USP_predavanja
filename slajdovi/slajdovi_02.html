@@ -1,0 +1,2308 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memorijski model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap&subset=latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+<style>
+:root {
+  --tekst: #1f2328;
+  --blago: #5b6470;
+  --akcenat: #1d5fa8;
+  --element: #dbe8f7;
+  --rezerva: #eef0f3;
+  --novo: #ffe2a8;
+  --lose: #c0392b;
+  --dobro: #1f7a3f;
+  --pitanje-bg: #fdf3dc;
+  --odgovor-bg: #e6f3ea;
+  --r-main-font: "Source Sans 3", system-ui, sans-serif;
+  --r-heading-font: "Source Sans 3", system-ui, sans-serif;
+  --r-code-font: "JetBrains Mono", ui-monospace, monospace;
+  --r-main-color: var(--tekst);
+  --r-heading-color: var(--tekst);
+  --r-link-color: var(--akcenat);
+  --r-main-font-size: 34px;
+}
+body { background: #fff; }
+.reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; letter-spacing: 0; }
+.reveal h2 { font-size: 1.45em; margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.05em; color: var(--blago); }
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal .slides section { text-align: left; }
+.reveal .centar { text-align: center; }
+.reveal pre { width: 100%; font-size: 0.74em; box-shadow: none; border: 1px solid #d8dde3; border-radius: 6px; }
+.reveal pre code { background: #fff; max-height: 560px; padding: 14px 18px; line-height: 1.45; }
+.reveal code { font-family: var(--r-code-font); }
+.reveal :not(pre) > code { background: #eef1f5; padding: 0 0.2em; border-radius: 4px; font-size: 0.9em; }
+.reveal .hljs-ln-numbers { color: #aab; padding-right: 0.8em !important; }
+.reveal pre table, .reveal table.hljs-ln { font-size: 1em !important; margin: 0 !important; }
+.reveal pre table td { padding: 0 !important; border: 0 !important; }
+.reveal .mali pre { font-size: 0.6em; }
+.reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: 0.22 !important; }
+.reveal .hljs.has-highlights tr.highlight-line td.hljs-ln-code { background: #fff1bf; }
+.reveal .mali pre code { line-height: 1.3; max-height: 600px; }
+.reveal h2 code { background: none !important; padding: 0 !important; font-size: 0.95em; }
+.reveal .sitno { font-size: 0.7em; color: var(--blago); }
+.reveal .oznaka { display: inline-block; font-size: 0.55em; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 0.15em 0.6em; border-radius: 999px; margin-bottom: 0.4em; }
+.reveal .oznaka.p { background: #f5d48a; color: #5a3d00; }
+.reveal .oznaka.o { background: #a9dbb9; color: #0f4424; }
+.reveal .opcije { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4em 1.2em; list-style: none; margin: 0.6em 0 0; padding: 0; }
+.reveal .opcije li { background: #fff; border: 2px solid #e2c98f; border-radius: 8px; padding: 0.3em 0.6em; font-size: 0.85em; }
+.reveal .opcije li b { color: var(--akcenat); margin-right: 0.4em; }
+.reveal .tacno { color: var(--dobro); font-weight: 700; }
+.reveal .netacno { color: var(--lose); font-weight: 700; }
+.reveal .okvir { border-left: 6px solid var(--akcenat); background: #f3f7fc; padding: 0.5em 0.8em; border-radius: 0 8px 8px 0; }
+.reveal .dve { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; align-items: start; }
+.reveal .f { font-size: 0.9em; }
+.reveal table { font-size: 0.85em; margin: 0.4em 0; }
+.reveal table th { border-bottom: 2px solid #bbb; }
+.reveal table td, .reveal table th { padding: 0.25em 0.8em; }
+
+/* mapa casa */
+.reveal .mapa { list-style: none; padding: 0; margin: 0.4em 0 0; }
+.reveal .mapa li { padding: 0.35em 0.7em; margin: 0.25em 0; border-radius: 8px; color: #9aa1a9; border: 2px solid transparent; }
+.reveal .mapa li.sad { color: var(--tekst); border-color: var(--akcenat); background: #f3f7fc; font-weight: 600; }
+.reveal .mapa li.gotovo { color: var(--blago); }
+.reveal .mapa li.gotovo::before { content: "\2713  "; color: var(--dobro); }
+
+/* niz kao kutije */
+.reveal .niz { display: flex; gap: 0; margin: 0.3em 0 1.1em; align-items: flex-end; }
+.reveal .niz .ime { font-family: var(--r-code-font); font-size: 0.6em; color: var(--blago); width: 6.5em; align-self: center; }
+.reveal .c { position: relative; width: 74px; height: 64px; border: 2px solid #3d4650; margin-left: -2px;
+  display: flex; align-items: center; justify-content: center; font-family: var(--r-code-font); font-size: 0.72em;
+  background: var(--element); }
+.reveal .c[data-i]::after { content: attr(data-i); position: absolute; bottom: -1.5em; font-size: 0.6em; color: var(--blago); }
+.reveal .c.r { background: repeating-linear-gradient(45deg, var(--rezerva), var(--rezerva) 6px, #e1e4e8 6px, #e1e4e8 12px); color: #9aa1a9; }
+.reveal .c.n { background: var(--novo); }
+.reveal .c.x { background: #fff; border-style: dashed; color: #c3c8ce; }
+.reveal .c.z { background: #3d4650; color: #fff; }
+.reveal .c.prazno { background: #fff; }
+.reveal .opis { font-size: 0.7em; color: var(--blago); margin-top: -0.4em; }
+
+/* dodatak za glavu 2: oznaka iznad kutije (a, a + 1, ...) i siroke kutije */
+.reveal .niz.gore { margin-top: 1.5em; margin-bottom: 1.6em; }
+.reveal .c[data-g]::before { content: attr(data-g); position: absolute; top: -1.55em; font-size: 0.72em; color: var(--akcenat); white-space: nowrap; }
+.reveal .c.s { width: 104px; }
+.reveal .c.u { width: 40px; }
+
+/* dijagrami */
+.reveal svg.graf, .reveal svg.kop { width: 100%; height: auto; max-height: 330px; }
+.reveal svg.kop text { font: 18px "JetBrains Mono", monospace; fill: #1f2328; }
+.reveal svg.kop .obj { fill: #f3f7fc; stroke: #1d5fa8; stroke-width: 2; }
+.reveal svg.kop .cel { fill: #dbe8f7; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .celr { fill: #eef0f3; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .naslov { font: 700 20px "Source Sans 3", sans-serif; }
+.reveal svg.kop .sr { text-anchor: middle; }
+.reveal svg.kop .ime { font-weight: 600; }
+.reveal svg.kop .adr { font-size: 14px; fill: #5b6470; }
+.reveal svg.kop .crv { fill: #c0392b; font: 600 18px "Source Sans 3", sans-serif; }
+.reveal svg.kop .nov { fill: #ffe2a8; }
+.reveal svg.kop .los { fill: #f6d5d0; stroke: #c0392b; }
+.reveal svg.kop .mrt { fill: #fff; stroke: #9aa1a9; stroke-width: 2; stroke-dasharray: 6 5; }
+.reveal svg.kop .lin { stroke: #1d5fa8; stroke-width: 2.5; fill: none; }
+.reveal svg.kop .lin.lose { stroke: #c0392b; stroke-dasharray: 7 5; }
+.reveal svg.kop .glava { fill: #1d5fa8; }
+.reveal svg.kop .glava.lose { fill: #c0392b; }
+.reveal svg.kop .okv { fill: none; stroke: #9aa1a9; stroke-width: 2; stroke-dasharray: 3 5; }
+.reveal svg.kop .raz { stroke: #d8dde3; stroke-width: 2; }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+<section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
+<textarea data-template>
+
+<!-- [1] Memorijski model -->
+<!-- .slide: class="centar" -->
+# Memorijski model
+
+### Uvod u strukture podataka · Glava 2
+
+---
+
+<!-- [2] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="sad">1. Adrese, pokazivači, reference</li>
+<li>2. Nizovi i dinamička memorija</li>
+<li>3. Životni vek, vlasništvo, RAII</li>
+</ol>
+
+---
+
+<!-- [3] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+void dodaj(std::vector<int> v)
+{
+    v.push_back(4);
+}
+
+std::vector<int> v = {1, 2, 3};
+dodaj(v);
+std::cout << v.size();
+```
+
+<ul class="opcije">
+<li><b>A</b><code>3</code></li>
+<li><b>B</b><code>4</code></li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b><code>0</code></li>
+</ul>
+
+---
+
+<!-- [4] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span> — `3`. Funkcija je dobila **kopiju** i dodala element u kopiju.
+
+Da bi menjala baš naš `v`, mora da stigne do **istog objekta**.
+
+---
+
+<!-- [5] Ime i indeks više nisu dovoljni -->
+## Ime i indeks više nisu dovoljni
+
+<svg viewBox="0 0 900 230" class="kop" role="img" aria-label="Tri čvora liste na različitim adresama, povezana pokazivačima"><rect x="60" y="30" width="70" height="58" class="cel"/><text x="95" y="66" class="sr">12</text><text x="95" y="108" class="sr adr">3000</text><rect x="130" y="30" width="50" height="58" class="celr"/><circle cx="155" cy="59" r="6" class="glava"/><rect x="660" y="60" width="70" height="58" class="cel"/><text x="695" y="96" class="sr">7</text><text x="695" y="138" class="sr adr">5040</text><rect x="730" y="60" width="50" height="58" class="celr"/><circle cx="755" cy="89" r="6" class="glava"/><rect x="330" y="140" width="70" height="58" class="cel"/><text x="365" y="176" class="sr">30</text><text x="365" y="218" class="sr adr">1208</text><rect x="400" y="140" width="50" height="58" class="celr"/><text x="425" y="176" class="sr">/</text><path d="M155,59 C330,30 520,60 644.1,78.0" class="lin"/><polygon points="658,80 645.0,72.1 643.3,83.9" class="glava"/><path d="M755,89 C800,180 560,190 465.7,171.7" class="lin"/><polygon points="452,169 464.6,177.6 466.9,165.8" class="glava"/></svg>
+
+- Do sada: ime promenljive i indeks u nizu.
+- Čvor liste mora da zna **gde** je sledeći — a oni nisu susedi u memoriji.
+
+<p class="sitno">Pogled unapred: povezane liste, glava 4.</p>
+
+---
+
+<!-- [6] Memorija: niz bajtova -->
+<!-- .slide: data-auto-animate -->
+## Memorija: niz bajtova
+
+<div class="niz gore">
+<span class="ime">memorija</span>
+<span data-id="m0" class="c prazno" data-i="1000"></span><span data-id="m1" class="c prazno" data-i="1001"></span><span data-id="m2" class="c prazno" data-i="1002"></span><span data-id="m3" class="c prazno" data-i="1003"></span><span data-id="m4" class="c prazno" data-i="1004"></span><span data-id="m5" class="c prazno" data-i="1005"></span><span data-id="m6" class="c prazno" data-i="1006"></span><span data-id="m7" class="c prazno" data-i="1007"></span>
+</div>
+
+- **bajt** (eng. *byte*) — najmanji deo memorije kome se pristupa
+- **adresa** (eng. *address*) — redni broj bajta
+- Adresa kaže **gde**, ne **šta** — kao kućni broj.
+
+---
+
+<!-- [7] Memorija: niz bajtova -->
+<!-- .slide: data-auto-animate -->
+## Memorija: niz bajtova
+
+<div class="niz gore">
+<span class="ime">memorija</span>
+<span data-id="m0" class="c" data-i="1000" data-g="a"></span><span data-id="m1" class="c" data-i="1001"></span><span data-id="m2" class="c" data-i="1002"></span><span data-id="m3" class="c" data-i="1003"></span><span data-id="m4" class="c prazno" data-i="1004"></span><span data-id="m5" class="c prazno" data-i="1005"></span><span data-id="m6" class="c prazno" data-i="1006"></span><span data-id="m7" class="c prazno" data-i="1007"></span>
+</div>
+
+```cpp
+int a = 10;
+```
+
+- `a` zauzima **četiri** uzastopna bajta; u njima je zapisano 10.
+- Adresa promenljive = adresa njenog **prvog** bajta: 1000.
+
+---
+
+<!-- [8] Koliko bajtova? -->
+## Koliko bajtova?
+
+```cpp
+sizeof(char)     // 1  - uvek
+sizeof(int)      // 4  - obicno
+sizeof(double)   // 8  - obicno
+```
+
+- Veličinu određuje **tip**. Jezik garantuje samo `sizeof(char) == 1`.
+- Prava adresa izgleda ovako: `0x7ffc3a9e1b2c` — i svaki put je drugačija.
+- Na slajdovima pišemo male brojeve: 1000, 1004, 2000…
+
+---
+
+<!-- [9] Vrednost i adresa -->
+## Vrednost i adresa
+
+```cpp
+int a = 10;
+a = 5;
+```
+
+- **Vrednost**: sadržaj bajtova. Menja se.
+- **Adresa**: mesto tih bajtova. Ne menja se dok promenljiva postoji.
+
+<div class="okvir">Adresa je i sama podatak: broj koji može da se zapamti i kasnije upotrebi.</div>
+
+---
+
+<!-- [10] Pokazivač -->
+## Pokazivač
+
+```cpp
+int a = 10;
+int* p = &a;
+
+sizeof(int*)     // 8  - na 64-bitnom sistemu
+```
+
+<svg viewBox="0 0 900 150" class="kop" role="img" aria-label="Pokazivač p sadrži adresu promenljive a"><rect x="140" y="45" width="120" height="58" class="cel"/><text x="200" y="81" class="sr">1000</text><text x="200" y="35" class="sr ime">p</text><text x="200" y="123" class="sr adr">2000</text><rect x="600" y="45" width="120" height="58" class="cel"/><text x="660" y="81" class="sr">10</text><text x="660" y="35" class="sr ime">a</text><text x="660" y="123" class="sr adr">1000</text><path d="M262,74 C413.2,74 446.8,74 584.0,74.0" class="lin"/><polygon points="598,74 584.0,68.0 584.0,80.0" class="glava"/></svg>
+
+- **Pokazivač** (eng. *pointer*): promenljiva čija je vrednost adresa.
+- `int*` — pokazivač na `int`. I `p` je objekat: ima svoju adresu i veličinu.
+
+---
+
+<!-- [11] Zvezdica u deklaraciji -->
+## Zvezdica u deklaraciji
+
+```cpp
+int* p3, p4, *p5;
+```
+
+- `p3` i `p5` su pokazivači. `p4` je običan `int`.
+- Zvezdica se odnosi na promenljivu uz koju stoji, ne na ceo red.
+
+<div class="okvir">Dogovor: svaki pokazivač u svom redu, zvezdica uz tip — <code>int* p;</code></div>
+
+---
+
+<!-- [12] Dva operatora -->
+## Dva operatora
+
+| izraz | čita se | daje |
+| --- | --- | --- |
+| `&a` | adresa od `a` | adresu objekta |
+| `*p` | ono na šta `p` pokazuje | **sam objekat**, ne kopiju |
+
+```cpp
+int b = *p;    // cita se objekat na koji p pokazuje
+*p = 5;        // menja se objekat na koji p pokazuje
+```
+
+<p class="sitno"><code>*p</code> se zove dereferenciranje (eng. <em>dereferencing</em>). Zvezdica u <code>int* p</code> je deo tipa, a u <code>*p</code> je operator.</p>
+
+---
+
+<!-- [13] Šta se menja: objekat ili pokazivač? -->
+<!-- .slide: data-auto-animate -->
+## Šta se menja: objekat ili pokazivač?
+
+<div class="dve">
+<div>
+
+```cpp [1-3]
+int a = 10;
+int c = 20;
+int* p = &a;
+
+*p = 5;
+p = &c;
+*p = 7;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 470 250" class="kop" role="img" aria-label="Početno stanje: p pokazuje na a"><rect x="20" y="105" width="110" height="58" class="cel"/><text x="75" y="141" class="sr">1000</text><text x="75" y="95" class="sr ime">p</text><text x="75" y="183" class="sr adr">2000</text><rect x="330" y="30" width="110" height="58" class="cel"/><text x="385" y="66" class="sr">10</text><text x="385" y="20" class="sr ime">a</text><text x="385" y="108" class="sr adr">1000</text><rect x="330" y="150" width="110" height="58" class="cel"/><text x="385" y="186" class="sr">20</text><text x="385" y="140" class="sr ime">c</text><text x="385" y="228" class="sr adr">1004</text><path d="M132,134 C220.2,134 239.8,59 314.0,59.0" class="lin"/><polygon points="328,59 314.0,53.0 314.0,65.0" class="glava"/></svg>
+
+</div>
+</div>
+
+Početak: `p` pokazuje na `a`.
+
+---
+
+<!-- [14] Šta se menja: objekat ili pokazivač? -->
+<!-- .slide: data-auto-animate -->
+## Šta se menja: objekat ili pokazivač?
+
+<div class="dve">
+<div>
+
+```cpp [5]
+int a = 10;
+int c = 20;
+int* p = &a;
+
+*p = 5;
+p = &c;
+*p = 7;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 470 250" class="kop" role="img" aria-label="Posle *p = 5 promenjeno je a"><rect x="20" y="105" width="110" height="58" class="cel"/><text x="75" y="141" class="sr">1000</text><text x="75" y="95" class="sr ime">p</text><text x="75" y="183" class="sr adr">2000</text><rect x="330" y="30" width="110" height="58" class="cel nov"/><text x="385" y="66" class="sr">5</text><text x="385" y="20" class="sr ime">a</text><text x="385" y="108" class="sr adr">1000</text><rect x="330" y="150" width="110" height="58" class="cel"/><text x="385" y="186" class="sr">20</text><text x="385" y="140" class="sr ime">c</text><text x="385" y="228" class="sr adr">1004</text><path d="M132,134 C220.2,134 239.8,59 314.0,59.0" class="lin"/><polygon points="328,59 314.0,53.0 314.0,65.0" class="glava"/></svg>
+
+</div>
+</div>
+
+`*p = 5` — menja se **objekat** `a`.
+
+---
+
+<!-- [15] Šta se menja: objekat ili pokazivač? -->
+<!-- .slide: data-auto-animate -->
+## Šta se menja: objekat ili pokazivač?
+
+<div class="dve">
+<div>
+
+```cpp [6]
+int a = 10;
+int c = 20;
+int* p = &a;
+
+*p = 5;
+p = &c;
+*p = 7;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 470 250" class="kop" role="img" aria-label="Posle p = &amp;c promenjen je pokazivač"><rect x="20" y="105" width="110" height="58" class="cel nov"/><text x="75" y="141" class="sr">1004</text><text x="75" y="95" class="sr ime">p</text><text x="75" y="183" class="sr adr">2000</text><rect x="330" y="30" width="110" height="58" class="cel"/><text x="385" y="66" class="sr">5</text><text x="385" y="20" class="sr ime">a</text><text x="385" y="108" class="sr adr">1000</text><rect x="330" y="150" width="110" height="58" class="cel"/><text x="385" y="186" class="sr">20</text><text x="385" y="140" class="sr ime">c</text><text x="385" y="228" class="sr adr">1004</text><path d="M132,134 C220.2,134 239.8,179 314.0,179.0" class="lin"/><polygon points="328,179 314.0,173.0 314.0,185.0" class="glava"/></svg>
+
+</div>
+</div>
+
+`p = &c` — menja se **pokazivač**. `a` i `c` ostaju isti.
+
+---
+
+<!-- [16] Šta se menja: objekat ili pokazivač? -->
+<!-- .slide: data-auto-animate -->
+## Šta se menja: objekat ili pokazivač?
+
+<div class="dve">
+<div>
+
+```cpp [7]
+int a = 10;
+int c = 20;
+int* p = &a;
+
+*p = 5;
+p = &c;
+*p = 7;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 470 250" class="kop" role="img" aria-label="Posle *p = 7 promenjeno je c"><rect x="20" y="105" width="110" height="58" class="cel"/><text x="75" y="141" class="sr">1004</text><text x="75" y="95" class="sr ime">p</text><text x="75" y="183" class="sr adr">2000</text><rect x="330" y="30" width="110" height="58" class="cel"/><text x="385" y="66" class="sr">5</text><text x="385" y="20" class="sr ime">a</text><text x="385" y="108" class="sr adr">1000</text><rect x="330" y="150" width="110" height="58" class="cel nov"/><text x="385" y="186" class="sr">7</text><text x="385" y="140" class="sr ime">c</text><text x="385" y="228" class="sr adr">1004</text><path d="M132,134 C220.2,134 239.8,179 314.0,179.0" class="lin"/><polygon points="328,179 314.0,173.0 314.0,185.0" class="glava"/></svg>
+
+</div>
+</div>
+
+`*p = 7` — isti zapis kao malopre, ali se sada menja `c`.
+
+---
+
+<!-- [17] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int a = 1;
+int c = 2;
+int* p = &a;
+int* q = p;
+
+q = &c;
+*q = 9;
+
+std::cout << a << ' ' << c << ' ' << *p;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>9 2 9</code></li>
+<li><b>B</b><code>1 9 9</code></li>
+<li><b>C</b><code>1 9 1</code></li>
+<li><b>D</b><code>9 9 9</code></li>
+</ul>
+
+---
+
+<!-- [18] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `1 9 1`
+
+- `int* q = p;` kopira **adresu**: oba pokazuju na `a`. Novi `int` ne nastaje.
+- `q = &c;` menja samo `q`. Pokazivač `p` i dalje pokazuje na `a`.
+
+<div class="okvir">Kopiranje pokazivača ne kopira objekat. A dva pokazivača su i dalje dve zasebne promenljive.</div>
+
+
+---
+
+
+<!-- [19] & traži objekat -->
+## `&` traži objekat
+
+```cpp
+int a = 1;
+int* p;
+
+p = &a;          // u redu
+p = &3;          // greska
+p = &(a + 3);    // greska
+```
+
+- `3` i `a + 3` su **vrednosti**, a ne objekti u memoriji — nemaju adresu.
+- g++: *lvalue required as unary '&' operand*
+
+<div class="okvir">Adresu ima samo ono što negde u memoriji postoji: promenljiva, element niza, član strukture.</div>
+
+---
+
+<!-- [20] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int a = 10;
+int* p = &a;
+
+int b = *p;
+*p = 5;
+
+std::cout << a << ' ' << b;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>5 5</code></li>
+<li><b>B</b><code>5 10</code></li>
+<li><b>C</b><code>10 10</code></li>
+<li><b>D</b><code>10 5</code></li>
+</ul>
+
+---
+
+<!-- [21] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `5 10`
+
+- `b` je dobilo **kopiju** vrednosti 10 i više nema veze sa `a`.
+- `*p = 5` menja sam objekat `a`.
+
+<div class="okvir"><code>a</code> i <code>*p</code> su dva imena istog objekta — <b>alijasovanje</b> (eng. <em>aliasing</em>).</div>
+
+
+---
+
+<!-- [22] Pokazivaču se ne dodeljuje broj -->
+## Pokazivaču se ne dodeljuje broj
+
+```cpp
+int* a;
+a = 10;      // greska pri prevodjenju
+```
+
+- g++: *invalid conversion from 'int' to 'int\*'*
+- Adresa jeste broj, ali tip `int*` nije celobrojni tip.
+- Jedini „broj" koji pokazivač sme da dobije je `nullptr`.
+
+<p class="sitno">U C-u se ovo prevodi, uz upozorenje.</p>
+
+---
+
+<!-- [23] Zamka -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Zamka</span>
+
+```cpp
+int* a;
+*a = 10;
+std::cout << *a;
+```
+
+<ul class="opcije">
+<li><b>A</b>ispisuje <code>10</code></li>
+<li><b>B</b>greška pri prevođenju</li>
+<li><b>C</b>ispisuje <code>0</code></li>
+<li><b>D</b>nedefinisano ponašanje</li>
+</ul>
+
+---
+
+<!-- [24] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">D</span> — `a` nije inicijalizovan: u njemu je neka zatečena adresa, a `10` se upisuje **tamo**.
+
+Na našem računaru:
+
+| prevođenje | ishod |
+| --- | --- |
+| `g++` | ispiše `10` |
+| `g++ -O2` | `Segmentation fault` |
+
+<div class="okvir">Isti kod, dva ishoda. Ko je glasao za A — imao je sreće, a ne tačan program.</div>
+
+<p class="sitno"><code>-Wall</code> upozorava: <em>'a' is used uninitialized</em>.</p>
+
+
+
+---
+
+<!-- [25] Pokrećemo: adrese na ekranu -->
+## Pokrećemo: adrese na ekranu
+
+```cpp
+int a = 10;
+int* p = &a;
+```
+
+```text
+a  = 10
+&a = 0x7ffde837935c
+p  = 0x7ffde837935c
+*p = 10
+&p = 0x7ffde8379360
+```
+
+- `p` i `&a` su isti broj.
+- `&p` je druga adresa: pokazivač je zaseban objekat.
+
+---
+
+<!-- [26] Tip pokazivača nije ukras -->
+## Tip pokazivača nije ukras
+
+```cpp
+float f = 5;
+int* p = &f;      // greska pri prevodjenju
+```
+
+- g++: *cannot convert 'float\*' to 'int\*'*
+- `int*` znači: na toj adresi je `int`, čitaj ga kao `int`.
+
+Ako ipak nateramo prevodilac:
+
+```cpp
+int* p = reinterpret_cast<int*>(&f);
+std::cout << *p;      // 1084227584
+```
+
+Bajtovi broja `5.0f`, pročitani kao da su `int`.
+
+---
+
+<!-- [27] Kad se ne poklapa ni veličina -->
+## Kad se ne poklapa ni veličina
+
+```cpp
+char c = 5;
+int* p = reinterpret_cast<int*>(&c);
+std::cout << *p;
+```
+
+<div class="niz gore">
+<span class="ime">memorija</span>
+<span class="c s n" data-i="1000" data-g="c">5</span><span class="c s x" data-i="1001">?</span><span class="c s x" data-i="1002">?</span><span class="c s x" data-i="1003">?</span>
+</div>
+
+- `c` zauzima **1** bajt, a `*p` čita **4**.
+- Tri bajta nisu naša: kod nas ispis `261`, pa `-473460987`…
+- Sanitajzer: `stack-buffer-overflow`.
+
+---
+
+<!-- [28] Koliko je velik pokazivač? -->
+## Koliko je velik pokazivač?
+
+```cpp
+sizeof(char*)      // 8
+sizeof(int*)       // 8
+sizeof(double*)    // 8
+```
+
+- Svaki pokazivač čuva **adresu** — a adresa je iste veličine bez obzira na šta pokazuje.
+- Tip pokazivača ne određuje njegovu veličinu, nego **kako se čita** ono na šta pokazuje: koliko bajtova i kao šta.
+
+<p class="sitno">8 bajtova na 64-bitnom sistemu.</p>
+
+---
+
+<!-- [29] Nulti pokazivač -->
+## Nulti pokazivač
+
+```cpp
+int* p = nullptr;      // ne pokazuje ni na jedan objekat
+
+if (p != nullptr) {
+    *p = 5;
+}
+```
+
+- `nullptr` znači „nema objekta": kraj liste, neuspešna pretraga.
+- `int* p;` bez inicijalizacije **nije** `nullptr` — vrednost je neodređena.
+- `*p` nad nultim pokazivačem: **nedefinisano ponašanje** (eng. *undefined behavior*).
+
+<p class="sitno">Obično <code>Segmentation fault</code> — ali jezik to ne garantuje.</p>
+
+---
+
+<!-- [30] Pokazivač na strukturu -->
+## Pokazivač na strukturu
+
+<div class="dve">
+<div>
+
+```cpp
+struct Razlomak {
+    int brojilac;
+    int imenilac;
+};
+
+Razlomak a{3, 4};
+Razlomak* pa = &a;
+```
+
+</div>
+<div>
+
+```cpp
+(*pa).imenilac = 8;
+
+pa->imenilac = 8;    // isto
+```
+
+Zagrade su obavezne: `.` ima prednost nad `*`.
+
+</div>
+</div>
+
+<svg viewBox="0 0 900 180" class="kop" role="img" aria-label="Pokazivač pa pokazuje na objekat a tipa Razlomak"><rect x="90" y="60" width="120" height="58" class="cel"/><text x="150" y="96" class="sr">1000</text><text x="150" y="50" class="sr ime">pa</text><text x="150" y="138" class="sr adr">2000</text><rect x="520" y="22" width="300" height="138" rx="8" class="obj"/><text x="536" y="46" class="ime">a</text><rect x="550" y="62" width="120" height="58" class="cel"/><text x="610" y="98" class="sr">3</text><text x="610" y="140" class="sr adr">brojilac</text><rect x="670" y="62" width="120" height="58" class="cel"/><text x="730" y="98" class="sr">4</text><text x="730" y="140" class="sr adr">imenilac</text><path d="M212,89 C349.7,89 380.3,89 504.0,89.0" class="lin"/><polygon points="518,89 504.0,83.0 504.0,95.0" class="glava"/></svg>
+
+---
+
+<!-- [31] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+Razlomak a{3, 4};
+Razlomak b = a;
+Razlomak* pa = &a;
+
+pa->brojilac = 5;
+
+std::cout << a.brojilac << ' ' << b.brojilac;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>5 5</code></li>
+<li><b>B</b><code>5 3</code></li>
+<li><b>C</b><code>3 3</code></li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- [32] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `5 3`. `b` je kopija objekta, a `pa` pokazuje na original.
+
+
+---
+
+<!-- [33] Referenca -->
+## Referenca
+
+```cpp
+int a = 10;
+int& r = a;
+
+r = 5;     // menja se a
+a = 12;    // r je sada 12
+```
+
+<svg viewBox="0 0 900 170" class="kop" role="img" aria-label="Pokazivač je zaseban objekat, referenca je drugo ime istog objekta"><text x="20" y="28" class="naslov">pokazivač</text><rect x="40" y="70" width="120" height="58" class="cel"/><text x="100" y="106" class="sr">1000</text><text x="100" y="60" class="sr ime">p</text><text x="100" y="148" class="sr adr">2000</text><rect x="300" y="70" width="110" height="58" class="cel"/><text x="355" y="106" class="sr">10</text><text x="355" y="60" class="sr ime">a</text><text x="355" y="148" class="sr adr">1000</text><path d="M162,99 C223.2,99 236.8,99 284.0,99.0" class="lin"/><polygon points="298,99 284.0,93.0 284.0,105.0" class="glava"/><line x1="470" y1="10" x2="470" y2="160" class="raz"/><text x="510" y="28" class="naslov">referenca</text><rect x="620" y="70" width="140" height="58" class="cel"/><text x="690" y="106" class="sr">10</text><text x="690" y="60" class="sr ime">a, r</text><text x="690" y="148" class="sr adr">1000</text></svg>
+
+**Referenca** (eng. *reference*): drugo ime postojećeg objekta. Novi `int` ne nastaje.
+
+---
+
+<!-- [34] Adresa reference -->
+## Adresa reference
+
+```cpp
+int& r = a;
+std::cout << "&r = " << &r << '\n';
+```
+
+```text
+&a = 0x7ffde837935c
+&r = 0x7ffde837935c
+```
+
+- `&r` i `&a` su ista adresa — referenca nema svoje mesto koje bismo mogli da vidimo.
+- Mora da se inicijalizuje odmah: `int& r;` se ne prevodi.
+
+---
+
+<!-- [35] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int a = 1;
+int b = 2;
+int& r = a;
+
+r = b;
+b = 7;
+
+std::cout << a << ' ' << r;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>1 7</code></li>
+<li><b>B</b><code>2 7</code></li>
+<li><b>C</b><code>2 2</code></li>
+<li><b>D</b><code>7 7</code></li>
+</ul>
+
+---
+
+<!-- [36] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `2 2`
+
+`r = b;` ne prebacuje referencu na `b`. To je obična dodela: u `a` se upisuje 2.
+
+<div class="okvir">Veza reference sa objektom je <b>stalna</b>. Pokazivač možemo preusmeriti, referencu ne.</div>
+
+---
+
+<!-- [37] Pokazivač i referenca -->
+## Pokazivač i referenca
+
+| svojstvo | pokazivač | referenca |
+| --- | --- | --- |
+| inicijalizacija pri deklaraciji | nije obavezna | obavezna |
+| veza sa objektom | može se preusmeriti | stalna |
+| stanje „nema objekta" | `nullptr` | ne postoji |
+| pristup objektu | `*p`, `p->clan` | `r`, `r.clan` |
+| sopstvena adresa | ima je | nema je |
+
+---
+
+<!-- [38] Prenos argumenata: dva načina -->
+## Prenos argumenata: dva načina
+
+<div class="dve">
+<div>
+
+```cpp
+void razmeni(int& a, int& b)
+{
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+
+razmeni(x, y);
+```
+
+</div>
+<div>
+
+```cpp
+void razmeni(int* pa, int* pb)
+{
+    int tmp = *pa;
+    *pa = *pb;
+    *pb = tmp;
+}
+
+razmeni(&x, &y);
+```
+
+</div>
+</div>
+
+- Sa `&x` se na mestu poziva **vidi** da funkcija menja argument.
+- Referenca uvek dobija postojeći objekat; pokazivač može biti i `nullptr`.
+
+---
+
+<!-- [39] Pitanje — nađi grešku -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje — nađi grešku</span>
+
+```cpp
+void razmeni(int* pa, int* pb)
+{
+    int* tmp = pa;
+    pa = pb;
+    pb = tmp;
+}
+
+int x = 1;
+int y = 2;
+razmeni(&x, &y);
+std::cout << x << ' ' << y;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>2 1</code></li>
+<li><b>B</b><code>1 2</code></li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b>nedefinisano ponašanje</li>
+</ul>
+
+---
+
+<!-- [40] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `1 2`
+
+`pa` i `pb` su **kopije adresa**. Funkcija je zamenila kopije; `x` i `y` niko nije ni dotakao.
+
+<div class="okvir">Parametar se uvek prenosi po vrednosti. Kod pokazivača je ta vrednost adresa — do objekta se stiže tek sa <code>*pa</code>.</div>
+
+---
+
+<!-- [41] Referenca samo za čitanje: const T& -->
+## Referenca samo za čitanje: `const T&`
+
+```cpp
+void ispisi(const std::string& s)
+{
+    std::cout << s << '\n';
+}
+```
+
+| parametar | kada |
+| --- | --- |
+| `T` | mali tipovi (`int`, `double`), samo čitanje |
+| `const T&` | veliki objekti, samo čitanje — nema kopiranja |
+| `T&` | funkcija menja argument |
+
+<p class="sitno">Zato je na početku časa trebalo <code>void dodaj(std::vector&lt;int&gt;&amp; v)</code>.</p>
+
+---
+
+<!-- [42] Referenca kao povratna vrednost -->
+## Referenca kao povratna vrednost
+
+```cpp
+int& element(int* podaci, int indeks)
+{
+    return podaci[indeks];
+}
+```
+
+```cpp
+int niz[] = {10, 20, 30};
+element(niz, 1) = 99;      // menja se niz[1]
+```
+
+Poziv funkcije **jeste** taj element, pa sme da stoji levo od `=`.
+
+<p class="sitno">Pogled unapred: zato kod vektora radi <code>v[i] = 99;</code> — <code>operator[]</code> vraća <code>T&amp;</code> (glava 3).</p>
+
+---
+
+<!-- [43] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int niz[] = {10, 20, 30};
+
+element(niz, 1) = 99;
+
+int kopija = element(niz, 0);
+kopija = 0;
+
+std::cout << niz[0] << ' ' << niz[1];
+```
+
+<ul class="opcije">
+<li><b>A</b><code>0 99</code></li>
+<li><b>B</b><code>10 99</code></li>
+<li><b>C</b><code>10 20</code></li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- [44] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `10 99`
+
+- `element(niz, 1) = 99;` upisuje u sam element.
+- `int kopija = …` pravi novu promenljivu; njena izmena ne dira niz.
+
+Da je pisalo `int& kopija = element(niz, 0);` — odgovor bi bio A.
+
+---
+
+<!-- [45] Viseća referenca -->
+## Viseća referenca
+
+```cpp
+int& neispravno()
+{
+    int x = 10;
+    return x;
+}
+```
+
+- `x` prestaje da postoji kad se funkcija završi.
+- Referenca ostaje bez objekta: **viseća referenca** (eng. *dangling reference*).
+- g++ upozorava: *reference to local variable 'x' returned*.
+
+<p class="sitno">Funkcija <code>element</code> nema taj problem: niz nije njena lokalna promenljiva.</p>
+
+---
+
+<!-- [46] Kada pokazivač, kada referenca? -->
+## Kada pokazivač, kada referenca?
+
+Referenca je bezbednija. Ali u strukturama podataka nije dovoljna:
+
+| treba nam | primer | zato |
+| --- | --- | --- |
+| „nema objekta" | poslednji čvor nema sledeći | `nullptr` |
+| veza koja se menja | umetanje u listu, novi blok niza | preusmeravanje |
+| objekat koji nastaje u toku rada | novi čvor | `new` vraća adresu |
+
+<div class="okvir">Spolja (parametri, povratne vrednosti): <b>reference</b>. Iznutra (veze, memorija): <b>pokazivači</b>.</div>
+
+---
+
+<!-- [47] Blok 1 — ukratko -->
+## Blok 1 — ukratko
+
+- Svaki objekat ima **vrednost** i **adresu**; pokazivač je promenljiva koja čuva adresu.
+- `&a` daje adresu, `*p` daje objekat. `p->clan` za strukture.
+- `*p = …` menja objekat; `p = …` menja pokazivač.
+- Kopiranje pokazivača ne kopira objekat.
+- Referenca: drugo ime, stalna veza, nema `nullptr`.
+- `const T&` za čitanje bez kopije, `T&` za izmenu i za povratnu vrednost.
+
+<p class="sitno">U knjizi: odeljci „Adrese i pokazivači" i „Reference".</p>
+
+---
+
+<!-- [48] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Adrese, pokazivači, reference</li>
+<li class="sad">2. Nizovi i dinamička memorija</li>
+<li>3. Životni vek, vlasništvo, RAII</li>
+</ol>
+
+---
+
+<!-- [49] Statički niz: elementi jedan do drugog -->
+## Statički niz: elementi jedan do drugog
+
+```cpp
+int a[5] = {8, 7, 6, 5, 4};
+```
+
+<div class="niz gore">
+<span class="ime">a</span>
+<span class="c s" data-i="1000">8</span><span class="c s" data-i="1004">7</span><span class="c s" data-i="1008">6</span><span class="c s" data-i="1012">5</span><span class="c s" data-i="1016">4</span>
+</div>
+
+- Elementi su u uzastopnim bajtovima — **kontinualan** raspored (eng. *contiguous*).
+- Broj elemenata je određen pri prevođenju.
+
+<p class="sitno">„Statički" ovde znači fiksne veličine; nema veze sa ključnom reči <code>static</code>.</p>
+
+---
+
+<!-- [50] Gde je a[i]? -->
+## Gde je `a[i]`?
+
+<div class="niz gore">
+<span class="ime">a</span>
+<span class="c s" data-i="1000">8</span><span class="c s" data-i="1004">7</span><span class="c s" data-i="1008">6</span><span class="c s n" data-i="1012">5</span><span class="c s" data-i="1016">4</span>
+</div>
+
+<div class="f">
+$$\operatorname{adresa}(a[i]) = A + i \cdot s$$
+</div>
+
+- $A$ — adresa početka, $s$ — veličina jednog elementa
+- `a[3]`: $1000 + 3 \cdot 4 = 1012$
+
+---
+
+<!-- [51] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+double d[10];
+```
+
+Niz počinje na adresi 2000, a `sizeof(double)` je 8. Na kojoj adresi počinje `d[3]`?
+
+<ul class="opcije">
+<li><b>A</b>2003</li>
+<li><b>B</b>2024</li>
+<li><b>C</b>2012</li>
+<li><b>D</b>2032</li>
+</ul>
+
+---
+
+<!-- [52] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — $2000 + 3 \cdot 8 = 2024$
+
+Jedno množenje i jedno sabiranje — bez obilaska elemenata pre njega.
+
+<div class="okvir">Pristup po indeksu je $O(1)$ <b>zato što</b> su elementi uzastopni i iste veličine.</div>
+
+<p class="sitno">Naći element sa zadatom <em>vrednošću</em> je druga operacija: $O(n)$.</p>
+
+---
+
+<!-- [53] Niz ne zna koliko je dugačak -->
+## Niz ne zna koliko je dugačak
+
+```cpp
+int a[5];
+
+sizeof(a)                   // 20 - pet elemenata po 4 bajta
+sizeof(a) / sizeof(a[0])    // 5
+```
+
+- Uz elemente se **ne čuva** nikakav podatak o dužini.
+- Prevodilac je zna iz deklaracije — program u toku rada nema odakle da je pročita.
+- `std::vector` je zna: `v.size()`. Negde, dakle, mora da je čuva.
+
+---
+
+<!-- [54] Ime niza i pokazivač -->
+## Ime niza i pokazivač
+
+```cpp
+int a[5] = {};
+int* p = a;         // adresa prvog elementa
+int* q = &a[0];     // isto
+```
+
+Ime niza se u izrazu pretvara u pokazivač na prvi element.
+
+Ali niz **nije** pokazivačka promenljiva:
+
+```cpp
+a = p;    // greska
+++a;      // greska
+```
+
+---
+
+<!-- [55] Pokazivačka aritmetika -->
+## Pokazivačka aritmetika
+
+<div class="niz gore">
+<span class="ime">int a[5]</span>
+<span class="c s" data-i="1000" data-g="a">8</span><span class="c s" data-i="1004" data-g="a + 1">7</span><span class="c s" data-i="1008" data-g="a + 2">6</span><span class="c s" data-i="1012" data-g="a + 3">5</span><span class="c s" data-i="1016" data-g="a + 4">4</span><span class="c s x" data-i="1020" data-g="a + 5"></span>
+</div>
+
+<div class="niz gore" style="margin-top:2.7em">
+<span class="ime">char t[5]</span>
+<span class="c s" data-i="2000" data-g="t">'a'</span><span class="c s" data-i="2001" data-g="t + 1">'b'</span><span class="c s" data-i="2002" data-g="t + 2">'c'</span><span class="c s" data-i="2003" data-g="t + 3">'d'</span><span class="c s" data-i="2004" data-g="t + 4">'e'</span><span class="c s x" data-i="2005" data-g="t + 5"></span>
+</div>
+
+- `p + k` je **k elemenata** dalje — ne k bajtova.
+- Veličinu elementa prevodilac uzima iz tipa pokazivača.
+
+---
+
+<!-- [56] Indeks je pokazivačka aritmetika -->
+## Indeks je pokazivačka aritmetika
+
+| zapis sa indeksom | zapis sa pokazivačem |
+| --- | --- |
+| `a[i]` | `*(a + i)` |
+| `&a[i]` | `a + i` |
+| `p[1]` | `*(p + 1)` |
+
+- Indeks sme da stoji i uz pokazivač: `p[1]`, pa i `p[-1]`.
+- `q - p` je razlika **indeksa**, ne broj bajtova.
+
+---
+
+<!-- [57] Pokrećemo: adrese elemenata -->
+## Pokrećemo: adrese elemenata
+
+```cpp
+int a[4] = {8, 7, 6, 5};
+
+for (int i = 0; i < 4; ++i)
+    std::cout << a + i << "  " << *(a + i) << '\n';
+```
+
+<div class="dve">
+<div>
+
+```text
+0x7fff85d66170  8
+0x7fff85d66174  7
+0x7fff85d66178  6
+0x7fff85d6617c  5
+```
+
+`int`: korak 4
+
+</div>
+<div class="fragment">
+
+```text
+0x7ffd008a9f90  8
+0x7ffd008a9f98  7
+0x7ffd008a9fa0  6
+0x7ffd008a9fa8  5
+```
+
+`double`: korak 8 — isti `a + i`
+
+</div>
+</div>
+
+---
+
+<!-- [58] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int a[] = {8, 7, 6, 5, 4};
+int* p = a + 1;
+int* q = &a[4];
+
+std::cout << *p << ' ' << p[2] << ' ' << q - p;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>7 6 3</code></li>
+<li><b>B</b><code>7 5 12</code></li>
+<li><b>C</b><code>7 5 3</code></li>
+<li><b>D</b><code>8 6 4</code></li>
+</ul>
+
+---
+
+<!-- [59] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `7 5 3`
+
+<div class="niz gore">
+<span class="ime">a</span>
+<span class="c s" data-i="0">8</span><span class="c s n" data-i="1" data-g="p">7</span><span class="c s" data-i="2">6</span><span class="c s n" data-i="3" data-g="p[2]">5</span><span class="c s n" data-i="4" data-g="q">4</span>
+</div>
+
+- `p[2]` se računa od mesta na kome je `p`: to je `a[3]`.
+- `q - p` je razlika indeksa: $4 - 1 = 3$. U bajtovima bi bilo 12.
+
+---
+
+<!-- [60] Kraj niza: a + n -->
+## Kraj niza: `a + n`
+
+```cpp
+for (int* p = a; p != a + 5; ++p)
+    std::cout << *p << ' ';
+```
+
+- `a + n` pokazuje **neposredno iza** poslednjeg elementa.
+- Sme da se poredi. Ne sme da se dereferencira.
+
+<div class="okvir">Poznato iz STL-a: <code>std::sort(v.begin(), v.end())</code> — i <code>v.end()</code> je mesto iza poslednjeg.</div>
+
+---
+
+<!-- [61] Zvezdica i ++: šta se menja? -->
+## Zvezdica i `++`: šta se menja?
+
+| izraz | značenje |
+| --- | --- |
+| `*p + 1` | pročitana vrednost, uvećana za 1 |
+| `*(p + 1)` | sledeći element |
+| `(*p)++` | uvećava se **element** |
+| `++*p`   | uvećava se **element** |
+| `*p++` | čita se element, a pomera se **pokazivač** |
+
+---
+
+<!-- [62] Zamka -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Zamka</span>
+
+```cpp
+int a[] = {5, 7, 9};
+int* p = a;
+
+int v = *p++;
+(*p)++;
+
+std::cout << v << ' ' << *p << ' ' << a[0] << ' ' << a[1];
+```
+
+<ul class="opcije">
+<li><b>A</b><code>5 8 5 8</code></li>
+<li><b>B</b><code>5 7 7 7</code></li>
+<li><b>C</b><code>6 8 6 8</code></li>
+<li><b>D</b><code>7 8 5 8</code></li>
+</ul>
+
+---
+
+<!-- [63] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span> — `5 8 5 8`
+
+- `int v = *p++;` — `v` dobija `a[0]`, a `p` prelazi na `a[1]`. Niz je netaknut.
+- `(*p)++;` — uvećava se `a[1]`: sa 7 na 8.
+
+<p class="sitno">B je odgovor onoga ko <code>*p++</code> čita kao <code>(*p)++</code>.</p>
+
+---
+
+<!-- [64] Aritmetika važi samo unutar jednog niza -->
+## Aritmetika važi samo unutar jednog niza
+
+<svg viewBox="0 0 900 230" class="kop" role="img" aria-label="Tri čvora liste na različitim adresama, povezana pokazivačima"><rect x="60" y="30" width="70" height="58" class="cel"/><text x="95" y="66" class="sr">12</text><text x="95" y="108" class="sr adr">3000</text><rect x="130" y="30" width="50" height="58" class="celr"/><circle cx="155" cy="59" r="6" class="glava"/><rect x="660" y="60" width="70" height="58" class="cel"/><text x="695" y="96" class="sr">7</text><text x="695" y="138" class="sr adr">5040</text><rect x="730" y="60" width="50" height="58" class="celr"/><circle cx="755" cy="89" r="6" class="glava"/><rect x="330" y="140" width="70" height="58" class="cel"/><text x="365" y="176" class="sr">30</text><text x="365" y="218" class="sr adr">1208</text><rect x="400" y="140" width="50" height="58" class="celr"/><text x="425" y="176" class="sr">/</text><path d="M155,59 C330,30 520,60 644.1,78.0" class="lin"/><polygon points="658,80 645.0,72.1 643.3,83.9" class="glava"/><path d="M755,89 C800,180 560,190 465.7,171.7" class="lin"/><polygon points="452,169 464.6,177.6 466.9,165.8" class="glava"/></svg>
+
+- `++p` vodi na **susedno mesto u memoriji**.
+- Kod liste to nije sledeći čvor — do njega se stiže samo preko sačuvanog pokazivača.
+
+<p class="sitno">Pogled unapred: glava 4.</p>
+
+---
+
+<!-- [65] Niz kao argument funkcije -->
+## Niz kao argument funkcije
+
+```cpp
+void obradi(int x[], int n);
+void obradi(int* x, int n);     // ista funkcija
+```
+
+```cpp
+obradi(a, 5);         // ceo niz
+obradi(a + 2, 3);     // tri elementa, pocev od a[2]
+```
+
+- Prenosi se **adresa prvog elementa**, ne kopija niza.
+- Funkcija radi nad originalnim elementima.
+
+---
+
+<!-- [66] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+void f(int x[])
+{
+    std::cout << sizeof(x) / sizeof(x[0]);
+}
+
+int a[10];
+std::cout << sizeof(a) / sizeof(a[0]) << ' ';
+f(a);
+```
+
+<ul class="opcije">
+<li><b>A</b><code>10 10</code></li>
+<li><b>B</b><code>10 2</code></li>
+<li><b>C</b><code>10 1</code></li>
+<li><b>D</b><code>40 8</code></li>
+</ul>
+
+---
+
+<!-- [67] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `10 2` (na 64-bitnom sistemu)
+
+U funkciji je `x` pokazivač: `sizeof(x)` je 8, a $8 / 4 = 2$.
+
+g++ upozorava: <em>'sizeof' on array function parameter 'x' will return size of 'int&#42;'</em>.
+
+<div class="okvir">Iz pokazivača se dužina niza ne može saznati. Zato se uvek prenosi zasebno: <code>(int* x, int n)</code>.</div>
+
+---
+
+<!-- [68] Granice niza niko ne proverava -->
+## Granice niza niko ne proverava
+
+```cpp
+int a[5];
+a[5] = 1;       // prevodi se
+a[100] = 1;     // prevodi se
+```
+
+- Nedefinisano ponašanje. Program **ne mora** da padne.
+- Može tiho da prepiše neku drugu promenljivu.
+
+| | provera indeksa |
+| --- | --- |
+| `a[i]`, `v[i]` | nema |
+| `v.at(i)` | ima — izuzetak `std::out_of_range` |
+
+---
+
+<!-- [69] Šta statički niz ne može -->
+## Šta statički niz ne može
+
+- Veličina mora biti poznata **pri prevođenju**.
+
+```cpp
+int n;
+std::cin >> n;
+int podaci[n];      // nije standardni C++
+```
+
+- Lokalni niz nestaje na kraju bloka.
+- Ne može da poraste.
+
+<div class="okvir">Treba nam memorija koju program traži <b>dok radi</b> — i vraća kad mu više ne treba.</div>
+
+
+---
+
+<!-- [70] new i delete: jedan objekat -->
+## `new` i `delete`: jedan objekat
+
+```cpp
+int* p = new int(10);
+
+*p = 20;
+
+delete p;
+p = nullptr;
+```
+
+- `new` zauzima prostor i vraća **adresu** novog objekta.
+- Objekat nema ime: pristupa mu se samo preko pokazivača.
+- `new int` — vrednost neodređena. `new int()` — nula.
+
+---
+
+<!-- [71] new[]: niz čija se dužina zna tek u toku rada -->
+## `new[]`: niz čija se dužina zna tek u toku rada
+
+```cpp
+int n = 4;
+int* p = new int[n]{};
+p[2] = 7;
+```
+
+<svg viewBox="0 0 900 210" class="kop" role="img" aria-label="Lokalne promenljive n i p na steku, niz u dinamičkoj memoriji"><rect x="20" y="10" width="330" height="180" rx="10" class="okv"/><text x="34" y="36" class="naslov">stek</text><rect x="440" y="10" width="440" height="180" rx="10" class="okv"/><text x="454" y="36" class="naslov">dinamička memorija</text><rect x="50" y="80" width="100" height="58" class="cel"/><text x="100" y="116" class="sr">4</text><text x="100" y="70" class="sr ime">n</text><rect x="200" y="80" width="100" height="58" class="cel"/><text x="250" y="70" class="sr ime">p</text><circle cx="250" cy="109" r="6" class="glava"/><rect x="520" y="80" width="80" height="58" class="cel"/><text x="560" y="116" class="sr">0</text><text x="560" y="158" class="sr adr">[0]</text><rect x="600" y="80" width="80" height="58" class="cel"/><text x="640" y="116" class="sr">0</text><text x="640" y="158" class="sr adr">[1]</text><rect x="680" y="80" width="80" height="58" class="cel"/><text x="720" y="116" class="sr">7</text><text x="720" y="158" class="sr adr">[2]</text><rect x="760" y="80" width="80" height="58" class="cel"/><text x="800" y="116" class="sr">0</text><text x="800" y="158" class="sr adr">[3]</text><path d="M250,109 C370.6,109 397.4,109 504.0,109.0" class="lin"/><polygon points="518,109 504.0,103.0 504.0,115.0" class="glava"/></svg>
+
+- `{}` postavlja elemente na nulu; bez toga su neodređeni.
+- Elementi su uzastopni: `p[i]` je i ovde $O(1)$.
+
+---
+
+<!-- [72] Dve vrste memorije -->
+## Dve vrste memorije
+
+| | automatska | dinamička |
+| --- | --- | --- |
+| gde | stek | dinamička memorija (eng. *heap*) |
+| nastaje | deklaracijom | izrazom `new` |
+| nestaje | sama, na kraju bloka | tek sa `delete` |
+| veličina | poznata pri prevođenju | poznata tek u toku rada |
+
+<div class="okvir">Razlika je u tome <b>ko</b> određuje kraj života objekta: blok ili programer.</div>
+
+<p class="sitno">Ovaj <em>heap</em> nije hip iz glave 7 — ista reč, dva nepovezana pojma.</p>
+
+---
+
+<!-- [73] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int n = 4;
+int* p = new int[n]{};
+p[2] = 7;
+
+delete[] p;
+```
+
+Šta je posle `delete[] p;` zapisano u promenljivoj `p`?
+
+<ul class="opcije">
+<li><b>A</b><code>nullptr</code></li>
+<li><b>B</b>ista adresa kao pre</li>
+<li><b>C</b>adresa nekog drugog niza</li>
+<li><b>D</b>ništa — <code>p</code> više ne postoji</li>
+</ul>
+
+---
+
+<!-- [74] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `delete[]` uništava **niz**, a promenljivu `p` ne dira.
+
+<svg viewBox="0 0 900 210" class="kop" role="img" aria-label="Lokalne promenljive n i p na steku, niz u dinamičkoj memoriji"><rect x="20" y="10" width="330" height="180" rx="10" class="okv"/><text x="34" y="36" class="naslov">stek</text><rect x="440" y="10" width="440" height="180" rx="10" class="okv"/><text x="454" y="36" class="naslov">dinamička memorija</text><rect x="50" y="80" width="100" height="58" class="cel"/><text x="100" y="116" class="sr">4</text><text x="100" y="70" class="sr ime">n</text><rect x="200" y="80" width="100" height="58" class="cel"/><text x="250" y="70" class="sr ime">p</text><circle cx="250" cy="109" r="6" class="glava lose"/><rect x="520" y="80" width="80" height="58" class="mrt"/><text x="560" y="116" class="sr">0</text><text x="560" y="158" class="sr adr">[0]</text><rect x="600" y="80" width="80" height="58" class="mrt"/><text x="640" y="116" class="sr">0</text><text x="640" y="158" class="sr adr">[1]</text><rect x="680" y="80" width="80" height="58" class="mrt"/><text x="720" y="116" class="sr">7</text><text x="720" y="158" class="sr adr">[2]</text><rect x="760" y="80" width="80" height="58" class="mrt"/><text x="800" y="116" class="sr">0</text><text x="800" y="158" class="sr adr">[3]</text><path d="M250,109 C370.6,109 397.4,109 504.0,109.0" class="lin lose"/><polygon points="518,109 504.0,103.0 504.0,115.0" class="glava lose"/></svg>
+
+`n` i `p` žive do kraja bloka. Zato posle `delete[] p;` ide `p = nullptr;`
+
+---
+
+<!-- [75] Šta je zauzeto sa new, oslobađa se sa delete -->
+## Šta je zauzeto sa `new`, oslobađa se sa `delete`
+
+| zauzimanje | oslobađanje |
+| --- | --- |
+| `T* p = new T;` | `delete p;` |
+| `T* p = new T[n];` | `delete[] p;` |
+
+- Oblik mora da se poklopi — i kad niz ima jedan element.
+- Oslobađa se pokazivač dobijen od `new`, ne `p + 1`.
+- Automatski objekat se ne oslobađa. Isti objekat se ne oslobađa dvaput.
+- `delete` nad `nullptr` je dozvoljen i ne radi ništa.
+
+---
+
+<!-- [76] Primer: koliko brojeva — saznajemo tek kad program krene -->
+## Primer: koliko brojeva
+
+```cpp
+int n;
+std::cin >> n;
+
+int* a = new int[n];
+
+for (int i = 0; i < n; ++i)
+    std::cin >> a[i];
+
+for (int i = n - 1; i >= 0; --i)
+    std::cout << a[i] << ' ';
+
+delete[] a;
+```
+
+<p class="sitno">Ulaz <code>5</code> i <code>8 7 6 5 4</code> daje <code>4 5 6 7 8</code>. Do sada ste ovo pisali kao <code>std::vector&lt;int&gt; a(n);</code></p>
+
+---
+
+<!-- [77] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int n = 4;
+int* p = new int[n]{};
+
+n = 10;
+p[4] = 7;
+
+std::cout << p[4];
+```
+
+<ul class="opcije">
+<li><b>A</b>niz se proširio na 10 elemenata, ispisuje <code>7</code></li>
+<li><b>B</b>greška pri prevođenju</li>
+<li><b>C</b>upis van niza: nedefinisano ponašanje</li>
+<li><b>D</b>program sigurno pada</li>
+</ul>
+
+---
+
+<!-- [78] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `n = 10;` menja samo `n`. Niz i dalje ima četiri elementa.
+
+Na našem računaru program ispiše `7` i završi se kao da je sve u redu.
+
+Sa `-fsanitize=address`: `heap-buffer-overflow`.
+
+<div class="okvir">Zauzet niz ne može da poraste. Više mesta = <b>novi niz, prenos elemenata, oslobađanje starog</b>. To je sledeća nedelja.</div>
+
+---
+
+<!-- [79] Blok 2 — ukratko -->
+## Blok 2 — ukratko
+
+- Niz je kontinualan: $\operatorname{adresa}(a[i]) = A + i \cdot s$, pa je `a[i]` u $O(1)$.
+- `a[i]` je `*(a + i)`; `p + k` pomera za `k` elemenata.
+- Niz ne nosi svoju dužinu; funkciji se prenosi pokazivač i `n`.
+- Granice niko ne proverava.
+- `new` / `delete`, `new[]` / `delete[]` — uvek u paru.
+- Zauzet niz ima stalnu veličinu.
+
+<p class="sitno">U knjizi: odeljci „Statički niz i njegova ograničenja" i „Dinamička alokacija".</p>
+
+---
+
+<!-- [80] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Adrese, pokazivači, reference</li>
+<li class="gotovo">2. Nizovi i dinamička memorija</li>
+<li class="sad">3. Životni vek, vlasništvo, RAII</li>
+</ol>
+
+---
+
+<!-- [81] Životni vek objekta -->
+## Životni vek objekta
+
+Za ispravan pokazivač nije dovoljno znati adresu. Objekat mora još da **postoji**.
+
+- **Životni vek** (eng. *lifetime*): period u kome objekat postoji.
+- **Doseg** (eng. *scope*): deo koda u kome se ime može upotrebiti.
+
+| | životni vek |
+| --- | --- |
+| lokalna promenljiva | od deklaracije do kraja bloka |
+| dinamički objekat | od `new` do `delete` |
+
+---
+
+<!-- [82] Automatski životni vek -->
+## Automatski životni vek
+
+```cpp
+void primer()
+{
+    int spoljasnji = 10;
+    {
+        int unutrasnji = 20;
+        spoljasnji += unutrasnji;
+    }   // ovde nestaje unutrasnji
+
+}       // ovde nestaje spoljasnji
+```
+
+- Svaki poziv funkcije ima **svoje** lokalne promenljive — i rekurzivni.
+- Dinamički objekat ne nestaje na kraju bloka: može da **nadživi** funkciju koja ga je napravila.
+
+---
+
+<!-- [83] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+<div class="dve">
+<div>
+
+```cpp
+int* f()
+{
+    int x = 7;
+    return &x;
+}
+```
+
+</div>
+<div>
+
+```cpp
+int* g()
+{
+    int* p = new int(7);
+    return p;
+}
+```
+
+</div>
+</div>
+
+Koja funkcija vraća pokazivač koji sme da se koristi?
+
+<ul class="opcije">
+<li><b>A</b>obe</li>
+<li><b>B</b>samo <code>f</code></li>
+<li><b>C</b>samo <code>g</code></li>
+<li><b>D</b>nijedna</li>
+</ul>
+
+---
+
+<!-- [84] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span>
+
+- `f`: `x` nestaje kad se funkcija završi. g++ upozorava: *address of local variable 'x' returned*.
+- `g`: nestaje samo lokalni pokazivač `p`. Objekat ostaje, a njegova adresa je vraćena.
+
+<div class="okvir">Na ovome počivaju sve strukture: čvor koji napravi funkcija za umetanje mora da ostane i kad se ona završi.</div>
+
+Ali: ko će za objekat iz `g` napisati `delete`?
+
+---
+
+<!-- [85] Konstruktor i destruktor -->
+<!-- .slide: class="mali" -->
+## Konstruktor i destruktor
+
+```cpp
+struct Trag {
+    int oznaka;
+
+    Trag(int k) : oznaka(k) { std::cout << "Konstruktor " << oznaka << '\n'; }
+    ~Trag()                 { std::cout << "Destruktor " << oznaka << '\n'; }
+};
+```
+
+- **Konstruktor**: zove se kao struktura; izvršava se kad objekat **nastaje**.
+- **Destruktor**: `~` ispred imena; izvršava se kad objekat **nestaje**.
+- `: oznaka(k)` postavlja član pre tela konstruktora.
+
+<p class="sitno">Poznato iz STL-a: lokalni <code>std::vector</code> na kraju bloka sam vrati memoriju. To radi njegov destruktor.</p>
+
+---
+
+<!-- [86] Pitanje — pokrećemo -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje — pokrećemo</span>
+
+```cpp
+int main()
+{
+    Trag a(1);
+    {
+        Trag b(2);
+        Trag* p = new Trag(3);
+        delete p;
+    }
+}
+```
+
+K = konstruktor, D = destruktor. Šta se ispisuje?
+
+<ul class="opcije">
+<li><b>A</b><code>K1 K2 K3 D3 D2 D1</code></li>
+<li><b>B</b><code>K1 K2 K3 D1 D2 D3</code></li>
+<li><b>C</b><code>K1 K2 K3 D2 D3 D1</code></li>
+<li><b>D</b><code>K1 K2 K3 D2 D1</code></li>
+</ul>
+
+---
+
+<!-- [87] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span>
+
+<div class="dve">
+<div>
+
+```text
+Konstruktor 1
+Konstruktor 2
+Konstruktor 3
+Destruktor 3
+Destruktor 2
+Destruktor 1
+```
+
+</div>
+<div>
+
+- `delete p;` — odmah destruktor 3
+- kraj unutrašnjeg bloka — destruktor 2
+- kraj `main` — destruktor 1
+
+Automatski objekti nestaju obrnutim redom od nastanka.
+
+</div>
+</div>
+
+---
+
+<!-- [88] Dopisujemo: brišemo delete p; -->
+## Dopisujemo: brišemo `delete p;`
+
+```text
+Konstruktor 1
+Konstruktor 2
+Konstruktor 3
+Destruktor 2
+Destruktor 1
+```
+
+- Destruktor 3 se **nikada** ne izvrši.
+- Pokazivač `p` je nestao na kraju bloka. Objekat nije.
+- Objekat je i dalje zauzet, a do njega više niko ne može da stigne.
+
+---
+
+<!-- [89] Vlasništvo -->
+## Vlasništvo
+
+Dinamički objekat ne nestaje sam. Neko mora da napiše `delete` — **tačno jednom**.
+
+- **Vlasnik** (eng. *owner*): deo programa zadužen za `delete`.
+- **Vlasnički pokazivač**: preko njega se objekat oslobađa.
+- **Pozajmljeni pokazivač**: preko njega se objekat samo koristi.
+
+Oba su tipa `int*`. Iz tipa se uloga **ne vidi** — mora da bude dogovorena.
+
+<div class="okvir">Naš dogovor: struktura je vlasnik sve memorije koju zauzme. Svi ostali dobijaju pozajmljene pokazivače.</div>
+
+---
+
+<!-- [90] Curenje memorije -->
+<!-- .slide: data-auto-animate -->
+## Curenje memorije
+
+```cpp [1]
+int* p = new int[100];
+
+p = new int[200];
+
+delete[] p;
+```
+
+<svg viewBox="0 0 900 250" class="kop" role="img" aria-label="Curenje memorije: adresa prvog niza je izgubljena" style="max-height:270px"><rect x="20" y="10" width="230" height="220" rx="10" class="okv"/><text x="34" y="36" class="naslov">stek</text><rect x="340" y="10" width="540" height="220" rx="10" class="okv"/><text x="354" y="36" class="naslov">dinamička memorija</text><rect x="75" y="95" width="110" height="58" class="cel"/><text x="130" y="85" class="sr ime">p</text><circle cx="130" cy="124" r="6" class="glava"/><rect x="400" y="50" width="220" height="58" class="cel"/><text x="510" y="86" class="sr">100 × int</text><path d="M130,124 C250.6,124 277.4,79 384.0,79.0" class="lin"/><polygon points="398,79 384.0,73.0 384.0,85.0" class="glava"/></svg>
+
+---
+
+<!-- [91] Curenje memorije -->
+<!-- .slide: data-auto-animate -->
+## Curenje memorije
+
+```cpp [3]
+int* p = new int[100];
+
+p = new int[200];
+
+delete[] p;
+```
+
+<svg viewBox="0 0 900 250" class="kop" role="img" aria-label="Curenje memorije: adresa prvog niza je izgubljena" style="max-height:270px"><rect x="20" y="10" width="230" height="220" rx="10" class="okv"/><text x="34" y="36" class="naslov">stek</text><rect x="340" y="10" width="540" height="220" rx="10" class="okv"/><text x="354" y="36" class="naslov">dinamička memorija</text><rect x="75" y="95" width="110" height="58" class="cel"/><text x="130" y="85" class="sr ime">p</text><circle cx="130" cy="124" r="6" class="glava"/><rect x="400" y="50" width="220" height="58" class="cel los"/><text x="510" y="86" class="sr">100 × int</text><text x="640" y="85" class="crv">zauzet, a nedostupan</text><rect x="400" y="150" width="420" height="58" class="cel"/><text x="610" y="186" class="sr">200 × int</text><path d="M130,124 C250.6,124 277.4,179 384.0,179.0" class="lin"/><polygon points="398,179 384.0,173.0 384.0,185.0" class="glava"/></svg>
+
+**Curenje memorije** (eng. *memory leak*): niz nije oslobođen, a adresa mu je izgubljena.
+
+---
+
+<!-- [92] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+void f()
+{
+    int* p = new int[100];
+    p[0] = 1;
+}
+
+for (int i = 0; i < 1000; ++i)
+    f();
+```
+
+Koliko `int`-ova je zauzeto posle petlje?
+
+<ul class="opcije">
+<li><b>A</b>0 — <code>p</code> nestaje na kraju funkcije</li>
+<li><b>B</b>100</li>
+<li><b>C</b>100 000</li>
+<li><b>D</b>program pada</li>
+</ul>
+
+---
+
+<!-- [93] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — 100 000 `int`-ova, 400 000 bajtova.
+
+Na kraju funkcije nestaje **pokazivač** `p`. Niz na koji je pokazivao ostaje.
+
+- Program radi i daje tačan rezultat.
+- Ako radi danima, memorije jednom nestane — i greška se vidi kasno.
+
+---
+
+<!-- [94] Viseći pokazivač -->
+## Viseći pokazivač
+
+```cpp
+int* p = nullptr;
+{
+    int x = 7;
+    p = &x;
+}
+// x vise ne postoji, a p i dalje cuva njegovu adresu
+```
+
+**Viseći pokazivač** (eng. *dangling pointer*): pokazuje na objekat čiji je životni vek završen.
+
+<div class="okvir">Čuvanje adrese ne održava objekat u životu.</div>
+
+---
+
+<!-- [95] Viseći pokazivač posle delete -->
+<!-- .slide: data-auto-animate -->
+## Viseći pokazivač posle `delete`
+
+<div class="dve">
+<div>
+
+```cpp [1-2]
+int* p = new int(7);
+int* q = p;
+
+delete p;
+p = nullptr;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 460 230" class="kop" role="img" aria-label="Pokazivači p i q i dinamički objekat"><rect x="20" y="30" width="110" height="58" class="cel"/><text x="75" y="20" class="sr ime">p</text><circle cx="75" cy="59" r="6" class="glava"/><rect x="20" y="150" width="110" height="58" class="cel"/><text x="75" y="140" class="sr ime">q</text><circle cx="75" cy="179" r="6" class="glava"/><rect x="340" y="90" width="100" height="58" class="cel"/><text x="390" y="126" class="sr">7</text><path d="M75,59 C193.35,59 219.65,108 324.0,108.0" class="lin"/><polygon points="338,108 324.0,102.0 324.0,114.0" class="glava"/><path d="M75,179 C193.35,179 219.65,130 324.0,130.0" class="lin"/><polygon points="338,130 324.0,124.0 324.0,136.0" class="glava"/></svg>
+
+</div>
+</div>
+
+Dva pokazivača, jedan objekat.
+
+---
+
+<!-- [96] Viseći pokazivač posle delete -->
+<!-- .slide: data-auto-animate -->
+## Viseći pokazivač posle `delete`
+
+<div class="dve">
+<div>
+
+```cpp [4]
+int* p = new int(7);
+int* q = p;
+
+delete p;
+p = nullptr;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 460 230" class="kop" role="img" aria-label="Pokazivači p i q i dinamički objekat"><rect x="20" y="30" width="110" height="58" class="cel"/><text x="75" y="20" class="sr ime">p</text><circle cx="75" cy="59" r="6" class="glava lose"/><rect x="20" y="150" width="110" height="58" class="cel"/><text x="75" y="140" class="sr ime">q</text><circle cx="75" cy="179" r="6" class="glava lose"/><rect x="340" y="90" width="100" height="58" class="mrt"/><text x="390" y="126" class="sr">7</text><path d="M75,59 C193.35,59 219.65,108 324.0,108.0" class="lin lose"/><polygon points="338,108 324.0,102.0 324.0,114.0" class="glava lose"/><path d="M75,179 C193.35,179 219.65,130 324.0,130.0" class="lin lose"/><polygon points="338,130 324.0,124.0 324.0,136.0" class="glava lose"/></svg>
+
+</div>
+</div>
+
+Objekat više ne postoji. `delete` nije promenio ni `p` ni `q`.
+
+---
+
+<!-- [97] Viseći pokazivač posle delete -->
+<!-- .slide: data-auto-animate -->
+## Viseći pokazivač posle `delete`
+
+<div class="dve">
+<div>
+
+```cpp [5]
+int* p = new int(7);
+int* q = p;
+
+delete p;
+p = nullptr;
+```
+
+</div>
+<div>
+
+<svg viewBox="0 0 460 230" class="kop" role="img" aria-label="Pokazivači p i q i dinamički objekat"><rect x="20" y="30" width="110" height="58" class="cel nov"/><text x="75" y="66" class="sr">nullptr</text><text x="75" y="20" class="sr ime">p</text><rect x="20" y="150" width="110" height="58" class="cel"/><text x="75" y="140" class="sr ime">q</text><circle cx="75" cy="179" r="6" class="glava lose"/><rect x="340" y="90" width="100" height="58" class="mrt"/><text x="390" y="126" class="sr">7</text><path d="M75,179 C193.35,179 219.65,130 324.0,130.0" class="lin lose"/><polygon points="338,130 324.0,124.0 324.0,136.0" class="glava lose"/></svg>
+
+</div>
+</div>
+
+`p = nullptr;` sređuje `p`. Za `q` ne čini ništa — `q` i dalje visi.
+
+---
+
+<!-- [98] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+int* p = new int(7);
+int* q = p;
+
+delete p;
+p = nullptr;
+
+delete q;
+```
+
+Šta radi poslednji red?
+
+<ul class="opcije">
+<li><b>A</b>ništa — objekat je već oslobođen</li>
+<li><b>B</b>isti objekat se oslobađa drugi put</li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b>oslobađa promenljivu <code>q</code></li>
+</ul>
+
+---
+
+<!-- [99] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — **dvostruko oslobađanje**: nedefinisano ponašanje.
+
+Na našem računaru:
+
+```text
+free(): double free detected in tcache 2
+Aborted (core dumped)
+```
+
+- Da je umesto toga pisalo `delete p;` — ništa se ne bi desilo: `p` je `nullptr`.
+- `delete` ne oslobađa promenljivu, nego objekat na koji ona pokazuje.
+
+---
+
+<!-- [100] Tri greške, isti izvor -->
+## Tri greške, isti izvor
+
+| greška | šta se desilo |
+| --- | --- |
+| curenje memorije | `delete` nije napisan |
+| viseći pokazivač | objekat je nestao, pokazivač se i dalje koristi |
+| dvostruko oslobađanje | `delete` dvaput za isti objekat |
+
+- `Segmentation fault` je poruka operativnog sistema — i stiže samo ponekad.
+- Češće program radi dalje sa pogrešnim podacima, a greška iskoči na drugom mestu.
+
+<div class="okvir">Alat: <code>g++ -fsanitize=address</code>. Ali prijavljuje samo ono što se u tom pokretanju zaista izvršilo.</div>
+
+---
+
+<!-- [101] Kopiranje strukture koja ima pokazivač -->
+## Kopiranje strukture koja ima pokazivač
+
+```cpp
+struct Ocene {
+    int broj;
+    int* podaci;
+};
+
+Ocene a{3, new int[3]{8, 9, 10}};
+Ocene b = a;
+```
+
+<svg viewBox="0 0 900 250" class="kop" role="img" aria-label="Plitko kopiranje: a.podaci i b.podaci pokazuju na isti niz"><rect x="20" y="10" width="330" height="96" rx="8" class="obj"/><text x="36" y="38" class="ime">a</text><rect x="80" y="32" width="110" height="46" class="cel"/><text x="135" y="62" class="sr">3</text><text x="135" y="98" class="sr adr">broj</text><rect x="190" y="32" width="130" height="46" class="cel"/><text x="255" y="98" class="sr adr">podaci</text><circle cx="255" cy="55" r="6" class="glava"/><rect x="20" y="140" width="330" height="96" rx="8" class="obj"/><text x="36" y="168" class="ime">b</text><rect x="80" y="162" width="110" height="46" class="cel"/><text x="135" y="192" class="sr">3</text><text x="135" y="228" class="sr adr">broj</text><rect x="190" y="162" width="130" height="46" class="cel"/><text x="255" y="228" class="sr adr">podaci</text><circle cx="255" cy="185" r="6" class="glava"/><rect x="560" y="100" width="90" height="58" class="cel"/><text x="605" y="136" class="sr">8</text><rect x="650" y="100" width="90" height="58" class="cel"/><text x="695" y="136" class="sr">9</text><rect x="740" y="100" width="90" height="58" class="cel"/><text x="785" y="136" class="sr">10</text><path d="M255,55 C400,55 440,118 544.0,118.0" class="lin"/><polygon points="558,118 544.0,112.0 544.0,124.0" class="glava"/><path d="M255,185 C400,185 440,140 544.0,140.0" class="lin"/><polygon points="558,140 544.0,134.0 544.0,146.0" class="glava"/></svg>
+
+---
+
+<!-- [102] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+Ocene a{3, new int[3]{8, 9, 10}};
+Ocene b = a;
+
+b.podaci[0] = 6;
+
+std::cout << a.podaci[0];
+```
+
+<ul class="opcije">
+<li><b>A</b><code>8</code></li>
+<li><b>B</b><code>6</code></li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b>program pada</li>
+</ul>
+
+---
+
+<!-- [103] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `6`. Kopiran je **pokazivač**, a ne niz.
+
+<svg viewBox="0 0 900 250" class="kop" role="img" aria-label="Plitko kopiranje: a.podaci i b.podaci pokazuju na isti niz"><rect x="20" y="10" width="330" height="96" rx="8" class="obj"/><text x="36" y="38" class="ime">a</text><rect x="80" y="32" width="110" height="46" class="cel"/><text x="135" y="62" class="sr">3</text><text x="135" y="98" class="sr adr">broj</text><rect x="190" y="32" width="130" height="46" class="cel"/><text x="255" y="98" class="sr adr">podaci</text><circle cx="255" cy="55" r="6" class="glava"/><rect x="20" y="140" width="330" height="96" rx="8" class="obj"/><text x="36" y="168" class="ime">b</text><rect x="80" y="162" width="110" height="46" class="cel"/><text x="135" y="192" class="sr">3</text><text x="135" y="228" class="sr adr">broj</text><rect x="190" y="162" width="130" height="46" class="cel"/><text x="255" y="228" class="sr adr">podaci</text><circle cx="255" cy="185" r="6" class="glava"/><rect x="560" y="100" width="90" height="58" class="cel nov"/><text x="605" y="136" class="sr">6</text><rect x="650" y="100" width="90" height="58" class="cel"/><text x="695" y="136" class="sr">9</text><rect x="740" y="100" width="90" height="58" class="cel"/><text x="785" y="136" class="sr">10</text><path d="M255,55 C400,55 440,118 544.0,118.0" class="lin"/><polygon points="558,118 544.0,112.0 544.0,124.0" class="glava"/><path d="M255,185 C400,185 440,140 544.0,140.0" class="lin"/><polygon points="558,140 544.0,134.0 544.0,146.0" class="glava"/></svg>
+
+- **Plitko kopiranje** (eng. *shallow copy*): kopira se adresa. Ovo je podrazumevano.
+- **Duboko kopiranje** (eng. *deep copy*): novi niz i prepis elemenata. Pišemo ga sami — glava 3.
+
+---
+
+<!-- [104] Odakle sve ove greške? -->
+## Odakle sve ove greške?
+
+```cpp
+int* a = new int[n];
+
+if (!ucitaj(a, n)) {
+    delete[] a;
+    return 1;
+}
+
+obradi(a, n);
+
+delete[] a;
+return 0;
+```
+
+- `delete` je zasebna naredba: na **svakom** izlazu iz funkcije, i **tačno jednom**.
+- Šta se pri izlasku iz bloka dešava samo od sebe?
+
+<p class="fragment"><b>Destruktori lokalnih objekata.</b></p>
+
+---
+
+<!-- [105] RAII -->
+## RAII
+
+<div class="okvir">
+
+**Konstruktor zauzima, destruktor oslobađa.**
+
+</div>
+
+- Memoriju poverimo objektu koji ima destruktor.
+- Kad objekat nestane — na bilo kom izlazu iz funkcije — destruktor oslobodi memoriju.
+- Vlasnik je objekat, a ne programerovo pamćenje.
+
+<p class="sitno">RAII = <em>Resource Acquisition Is Initialization</em>. Resurs je najčešće memorija, ali može biti i otvorena datoteka.</p>
+
+---
+
+<!-- [106] Pišemo zajedno: destruktor za Ocene -->
+## Pišemo zajedno: destruktor za `Ocene`
+
+```cpp
+struct Ocene {
+    int broj;
+    int* podaci;
+
+    Ocene(int n) : broj(n), podaci(new int[n]{}) {}
+
+    // ovde pisemo destruktor
+};
+```
+
+Konstruktor već zauzima niz. Niko ga ne oslobađa.
+
+---
+
+<!-- [107] Ocene sa destruktorom -->
+## `Ocene` sa destruktorom
+
+```cpp [7-11]
+struct Ocene {
+    int broj;
+    int* podaci;
+
+    Ocene(int n) : broj(n), podaci(new int[n]{}) {}
+
+    ~Ocene()
+    {
+        std::cout << "oslobadjam\n";
+        delete[] podaci;
+    }
+};
+```
+
+Niz sada nestaje zajedno sa objektom. Onaj ko koristi `Ocene` ne piše nijedan `delete`.
+
+---
+
+<!-- [108] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+`Ocene` ima destruktor. Šta se dešava na kraju funkcije?
+
+```cpp
+void obradi()
+{
+    Ocene a(3);
+    Ocene b = a;
+}
+```
+
+<ul class="opcije">
+<li><b>A</b>sve je u redu: svaki objekat oslobodi svoj niz</li>
+<li><b>B</b>curi memorija</li>
+<li><b>C</b>isti niz se oslobađa dvaput</li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- [109] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — kopiranje je i dalje plitko, a sada **oba** destruktora rade `delete[]`.
+
+```text
+oslobadjam
+oslobadjam
+free(): double free detected in tcache 2
+Aborted (core dumped)
+```
+
+<div class="okvir">Destruktor sam nije dovoljan. Klasa koja oslobađa memoriju mora da reši i kopiranje.</div>
+
+---
+
+<!-- [110] Pravilo trojke -->
+## Pravilo trojke
+
+Klasa kojoj treba destruktor, po pravilu mora da definiše i:
+
+- konstruktor kopije — `Ocene b = a;`
+- operator dodele — `b = a;`
+
+To je **pravilo trojke** (eng. *rule of three*). Za sada biramo jednostavnije — kopiranje zabranjujemo:
+
+```cpp
+Ocene(const Ocene&) = delete;
+Ocene& operator=(const Ocene&) = delete;
+```
+
+Sada `Ocene b = a;` daje grešku **pri prevođenju**: *use of deleted function*.
+
+<p class="sitno">Duboko kopiranje pišemo sledeće nedelje. Sa premeštanjem je to „pravilo petorke" — van okvira kursa.</p>
+
+---
+
+<!-- [111] Gotovo rešenje: std::unique_ptr -->
+## Gotovo rešenje: `std::unique_ptr`
+
+```cpp
+void obradi(bool prekini)
+{
+    auto p = std::make_unique<int>(42);     // #include <memory>
+
+    std::cout << *p << '\n';
+
+    if (prekini)
+        return;       // ovde se ceo broj oslobadja
+
+    *p = 17;
+}                     // i ovde
+```
+
+- **Pametni pokazivač** (eng. *smart pointer*): koristi se kao pokazivač, ponaša se kao vlasnik.
+- `delete` se ne piše. Kopiranje se ne prevodi, pa nema dva vlasnika.
+
+---
+
+<!-- [112] Zašto onda uopšte new i delete? -->
+## Zašto onda uopšte `new` i `delete`?
+
+- U ovom kursu **pravimo** strukture — moramo da vidimo šta je ispod.
+- Veze među čvorovima menjamo običnom dodelom; `unique_ptr` traži premeštanje, koje ne radimo.
+
+<div class="okvir">
+
+U kodu koji strukture samo **koristi**: `std::vector`, `std::map`, `std::unique_ptr`. Bez ručnog `new`.
+
+</div>
+
+<p class="sitno">Zato u prva dva semestra niste napisali nijedan <code>delete</code>: <code>std::vector</code> radi po pravilu RAII.</p>
+
+---
+
+<!-- [113] Glava 2 — ukratko -->
+## Glava 2 — ukratko
+
+1. Pokazivač čuva adresu; `*p` je objekat, `p` je veza koja može da se promeni.
+2. Referenca je drugo ime: spolja reference, iznutra pokazivači.
+3. Niz je kontinualan, pa je `a[i]` u $O(1)$ — ali ne zna svoju dužinu i ne može da poraste.
+4. `new` i `delete`: objekat živi dok ga neko ne oslobodi — tačno jednom.
+5. Curenje, viseći pokazivač, dvostruko oslobađanje; plitko kopiranje.
+6. RAII: konstruktor zauzima, destruktor oslobađa.
+
+<p class="sitno">U knjizi: glava 2 u celini.</p>
+
+---
+
+<!-- [114] Sledeće nedelje -->
+## Sledeće nedelje
+
+Sve od danas na jednom mestu — **dinamički niz**:
+
+- pokazivač na blok + broj elemenata
+- konstruktor zauzima, destruktor oslobađa
+- `operator[]` vraća `T&`
+- kad ponestane mesta: novi blok, prenos, `delete[]` starog
+
+<div class="okvir">To je <code>std::vector</code> — napisan našim rukama.</div>
+
+</textarea>
+</section>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+  width: 1280,
+  height: 760,
+  margin: 0.05,
+  hash: true,
+  slideNumber: "c/t",
+  transition: "fade",
+  autoAnimateDuration: 0.8,
+  plugins: [RevealMarkdown, RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+</body>
+</html>

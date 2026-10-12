@@ -1001,6 +1001,56 @@ Referenca je bezbednija. Ali u strukturama podataka nije dovoljna:
 
 ---
 
+<!-- [34a] const i pokazivač -->
+## `const` i pokazivač
+
+<div class="dve">
+<div>
+
+```cpp
+const int* p = &a;
+int* const r = &a;
+
+p = &b;     // u redu
+*p = 5;     // greska
+r = &b;     // greska
+*r = 5;     // u redu
+```
+
+</div>
+<div>
+
+| deklaracija | zaključan je |
+| --- | --- |
+| `const int* p` | objekat |
+| `int const* p` | objekat — isto |
+| `int* const p` | pokazivač |
+| `const int* const p` | oba |
+
+</div>
+</div>
+
+<div class="dve">
+<div>
+
+```cpp
+const int c = 3;
+int* x = &c;         // greska
+const int* y = &c;   // u redu
+```
+
+</div>
+<div>
+
+Na `const` objekat ne može običan `int*`: preko njega bi se objekat mogao promeniti.
+
+</div>
+</div>
+
+<p class="sitno"><code>const</code> levo od <code>*</code> štiti objekat, desno od <code>*</code> štiti pokazivač. Obrnuto je dozvoljeno: <code>const int*</code> sme da pokazuje i na običan <code>int</code>.</p>
+
+---
+
 <!-- [47] Blok 1 — ukratko -->
 ## Blok 1 — ukratko
 

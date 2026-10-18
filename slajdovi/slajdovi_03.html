@@ -1,0 +1,1843 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinamički niz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap&subset=latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+<style>
+:root {
+  --tekst: #1f2328;
+  --blago: #5b6470;
+  --akcenat: #1d5fa8;
+  --element: #dbe8f7;
+  --rezerva: #eef0f3;
+  --novo: #ffe2a8;
+  --lose: #c0392b;
+  --dobro: #1f7a3f;
+  --pitanje-bg: #fdf3dc;
+  --odgovor-bg: #e6f3ea;
+  --r-main-font: "Source Sans 3", system-ui, sans-serif;
+  --r-heading-font: "Source Sans 3", system-ui, sans-serif;
+  --r-code-font: "JetBrains Mono", ui-monospace, monospace;
+  --r-main-color: var(--tekst);
+  --r-heading-color: var(--tekst);
+  --r-link-color: var(--akcenat);
+  --r-main-font-size: 34px;
+}
+body { background: #fff; }
+.reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; letter-spacing: 0; }
+.reveal h2 { font-size: 1.45em; margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.05em; color: var(--blago); }
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal .slides section { text-align: left; }
+.reveal .centar { text-align: center; }
+.reveal pre { width: 100%; font-size: 0.74em; box-shadow: none; border: 1px solid #d8dde3; border-radius: 6px; }
+.reveal pre code { background: #fff; max-height: 560px; padding: 14px 18px; line-height: 1.45; }
+.reveal code { font-family: var(--r-code-font); }
+.reveal :not(pre) > code { background: #eef1f5; padding: 0 0.2em; border-radius: 4px; font-size: 0.9em; }
+.reveal .hljs-ln-numbers { color: #aab; padding-right: 0.8em !important; }
+.reveal pre table, .reveal table.hljs-ln { font-size: 1em !important; margin: 0 !important; }
+.reveal pre table td { padding: 0 !important; border: 0 !important; }
+.reveal .mali pre { font-size: 0.6em; }
+.reveal .hljs.has-highlights tr:not(.highlight-line) { opacity: 0.22 !important; }
+.reveal .hljs.has-highlights tr.highlight-line td.hljs-ln-code { background: #fff1bf; }
+.reveal .mali pre code { line-height: 1.3; max-height: 600px; }
+.reveal h2 code { background: none !important; padding: 0 !important; font-size: 0.95em; }
+.reveal .sitno { font-size: 0.7em; color: var(--blago); }
+.reveal .oznaka { display: inline-block; font-size: 0.55em; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 0.15em 0.6em; border-radius: 999px; margin-bottom: 0.4em; }
+.reveal .oznaka.p { background: #f5d48a; color: #5a3d00; }
+.reveal .oznaka.o { background: #a9dbb9; color: #0f4424; }
+.reveal .opcije { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4em 1.2em; list-style: none; margin: 0.6em 0 0; padding: 0; }
+.reveal .opcije li { background: #fff; border: 2px solid #e2c98f; border-radius: 8px; padding: 0.3em 0.6em; font-size: 0.85em; }
+.reveal .opcije li b { color: var(--akcenat); margin-right: 0.4em; }
+.reveal .tacno { color: var(--dobro); font-weight: 700; }
+.reveal .netacno { color: var(--lose); font-weight: 700; }
+.reveal .okvir { border-left: 6px solid var(--akcenat); background: #f3f7fc; padding: 0.5em 0.8em; border-radius: 0 8px 8px 0; }
+.reveal .dve { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; align-items: start; }
+.reveal .f { font-size: 0.9em; }
+.reveal table { font-size: 0.85em; margin: 0.4em 0; }
+.reveal table th { border-bottom: 2px solid #bbb; }
+.reveal table td, .reveal table th { padding: 0.25em 0.8em; }
+
+/* mapa casa */
+.reveal .mapa { list-style: none; padding: 0; margin: 0.4em 0 0; }
+.reveal .mapa li { padding: 0.35em 0.7em; margin: 0.25em 0; border-radius: 8px; color: #9aa1a9; border: 2px solid transparent; }
+.reveal .mapa li.sad { color: var(--tekst); border-color: var(--akcenat); background: #f3f7fc; font-weight: 600; }
+.reveal .mapa li.gotovo { color: var(--blago); }
+.reveal .mapa li.gotovo::before { content: "\2713  "; color: var(--dobro); }
+
+/* niz kao kutije */
+.reveal .niz { display: flex; gap: 0; margin: 0.3em 0 1.1em; align-items: flex-end; }
+.reveal .niz .ime { font-family: var(--r-code-font); font-size: 0.6em; color: var(--blago); width: 6.5em; align-self: center; }
+.reveal .c { position: relative; width: 74px; height: 64px; border: 2px solid #3d4650; margin-left: -2px;
+  display: flex; align-items: center; justify-content: center; font-family: var(--r-code-font); font-size: 0.72em;
+  background: var(--element); }
+.reveal .c[data-i]::after { content: attr(data-i); position: absolute; bottom: -1.5em; font-size: 0.6em; color: var(--blago); }
+.reveal .c.r { background: repeating-linear-gradient(45deg, var(--rezerva), var(--rezerva) 6px, #e1e4e8 6px, #e1e4e8 12px); color: #9aa1a9; }
+.reveal .c.n { background: var(--novo); }
+.reveal .c.x { background: #fff; border-style: dashed; color: #c3c8ce; }
+.reveal .c.z { background: #3d4650; color: #fff; }
+.reveal .c.prazno { background: #fff; }
+.reveal .opis { font-size: 0.7em; color: var(--blago); margin-top: -0.4em; }
+
+/* grafikon */
+.reveal svg.graf, .reveal svg.kop { width: 100%; height: auto; max-height: 330px; }
+.reveal svg.graf .jeftino { fill: #9fbfe3; }
+.reveal svg.graf .skupo { fill: var(--lose); }
+.reveal svg.graf .osa { stroke: #3d4650; stroke-width: 2; }
+.reveal svg.graf .lab { font: 14px "JetBrains Mono", monospace; fill: #3d4650; text-anchor: middle; }
+
+/* dijagrami: objekti, pokazivaci, blokovi */
+.reveal svg.kop text { font: 18px "JetBrains Mono", monospace; fill: #1f2328; }
+.reveal svg.kop .obj { fill: #f3f7fc; stroke: #1d5fa8; stroke-width: 2; }
+.reveal svg.kop .cel { fill: #dbe8f7; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .celr { fill: #eef0f3; stroke: #3d4650; stroke-width: 2; }
+.reveal svg.kop .naslov { font: 700 20px "Source Sans 3", sans-serif; }
+.reveal svg.kop .sr { text-anchor: middle; }
+.reveal svg.kop .ime { font-weight: 600; }
+.reveal svg.kop .adr { font-size: 14px; fill: #5b6470; }
+.reveal svg.kop .lin { stroke: #1d5fa8; stroke-width: 2.5; fill: none; }
+.reveal svg.kop .lin.lose { stroke: #c0392b; stroke-dasharray: 7 5; }
+.reveal svg.kop .glava { fill: #1d5fa8; }
+.reveal svg.kop .glava.lose { fill: #c0392b; }
+.reveal svg.kop .okv { fill: none; stroke: #9aa1a9; stroke-width: 2; stroke-dasharray: 3 5; }
+
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+<section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n--\n$">
+<textarea data-template>
+
+<!-- [1] Dinamički niz -->
+<!-- .slide: class="centar" -->
+# Dinamički niz
+
+### Uvod u strukture podataka · Glava 3
+
+---
+
+<!-- [2] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="sad">1. Veličina, kapacitet i klasa</li>
+<li>2. Rast niza i cena dodavanja</li>
+<li>3. Umetanje, brisanje, kopiranje</li>
+</ol>
+
+---
+
+<!-- [3] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+std::vector<int> v;
+for (int i = 0; i < 1000000; ++i)
+    v.push_back(i);
+```
+
+Koliko puta je `v` tražio novi blok memorije?
+
+<ul class="opcije">
+<li><b>A</b>1 000 000 puta</li>
+<li><b>B</b>oko 10 000 puta</li>
+<li><b>C</b>oko 20 puta</li>
+<li><b>D</b>jednom</li>
+</ul>
+
+---
+
+<!-- [4] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — sa g++ tačno **21** put: kapacitet ide 1, 2, 4, 8, …, 1 048 576.
+
+Ali svaki put kada dobije novi blok, `vector` mora da prepiše sve što već ima.
+
+<div class="okvir">Danas: kako je to napravljeno i zašto je ipak brzo.</div>
+
+---
+
+<!-- [5] Niz fiksne dužine -->
+## Niz fiksne dužine
+
+```cpp
+int a[100];
+int n = 17;   // koliko elemenata stvarno koristimo
+```
+
+- `n` nije deo niza — o njemu brine **tvoj kod**
+- 100 je premalo? Program ne može dalje.
+- 10 000 „za svaki slučaj"? Memorija uglavnom stoji prazna.
+
+Svaka unapred izabrana granica je ili premala ili rasipna.
+
+---
+
+<!-- [6] Učitavamo sve do kraja ulaza -->
+## Učitavamo sve do kraja ulaza
+
+```cpp
+int a[10000];
+int n = 0;
+
+int x;
+while (std::cin >> x)
+    a[n++] = x;
+```
+
+- Ulaz ima 10 001 broj? Upis van niza — nedefinisano ponašanje (glava 2).
+- Ulaz ima 5 brojeva? Rezervisano je 10 000 mesta.
+- Do sada: `std::vector<int> a;` i `a.push_back(x);` — bez granice.
+
+---
+
+<!-- [7] Šta želimo -->
+## Šta želimo
+
+Strukturu koja **sama** brine o prostoru.
+
+- broj elemenata
+- pristup po indeksu, `a[i]`, kao i do sada — $O(1)$
+- dodavanje elementa
+- uklanjanje elementa
+
+To je **dinamički niz** (eng. *dynamic array*) — ono što već koristite kao `std::vector`.
+
+---
+
+<!-- [8] Zašto ne proširimo postojeći blok? -->
+## Zašto ne proširimo postojeći blok?
+
+<div class="niz">
+<span class="ime">memorija</span>
+<span class="c">10</span><span class="c">20</span><span class="c">30</span><span class="c">40</span><span class="c z">?</span><span class="c z">?</span>
+</div>
+
+- Elementi moraju biti **uzastopni** — inače nema `a[i]` u $O(1)$.
+- Memorija iza bloka je verovatno već nečija.
+- Jedini izlaz: **novi, veći blok** i prenos elemenata.
+
+---
+
+<!-- [9] Veličina i kapacitet -->
+## Veličina i kapacitet
+
+<div class="niz">
+<span class="ime">elementi</span>
+<span class="c" data-i="0">10</span><span class="c" data-i="1">20</span><span class="c" data-i="2">30</span><span class="c" data-i="3">40</span><span class="c" data-i="4">50</span><span class="c r" data-i="5"></span><span class="c r" data-i="6"></span><span class="c r" data-i="7"></span>
+</div>
+
+- **veličina** = 5 — koliko elemenata niz sadrži (`size()`)
+- **kapacitet** = 8 — koliko ih staje bez nove alokacije (`capacity()`)
+
+Korisnika zanima samo veličina. Kapacitet je unutrašnja stvar strukture.
+
+---
+
+<!-- [10] Tri podatka u objektu -->
+## Tri podatka u objektu
+
+<svg viewBox="0 0 900 255" class="kop" role="img" aria-label="Objekat sa pokazivačem, veličinom i kapacitetom i blok od osam polja"><rect x="20" y="10" width="300" height="220" rx="8" class="obj"/><text x="36" y="38" class="naslov">a</text><text x="36" y="88" class="ime">elementi</text><rect x="190" y="55" width="110" height="46" class="cel"/><text x="36" y="143" class="ime">velicina_</text><rect x="190" y="110" width="110" height="46" class="cel"/><text x="245" y="141" class="sr">5</text><text x="36" y="198" class="ime">kapacitet_</text><rect x="190" y="165" width="110" height="46" class="cel"/><text x="245" y="196" class="sr">8</text><circle cx="245" cy="78" r="6" class="glava"/><rect x="400" y="55" width="62" height="46" class="cel"/><text x="431" y="86" class="sr">10</text><text x="431" y="122" class="sr adr">[0]</text><rect x="462" y="55" width="62" height="46" class="cel"/><text x="493" y="86" class="sr">20</text><text x="493" y="122" class="sr adr">[1]</text><rect x="524" y="55" width="62" height="46" class="cel"/><text x="555" y="86" class="sr">30</text><text x="555" y="122" class="sr adr">[2]</text><rect x="586" y="55" width="62" height="46" class="cel"/><text x="617" y="86" class="sr">40</text><text x="617" y="122" class="sr adr">[3]</text><rect x="648" y="55" width="62" height="46" class="cel"/><text x="679" y="86" class="sr">50</text><text x="679" y="122" class="sr adr">[4]</text><rect x="710" y="55" width="62" height="46" class="celr"/><text x="741" y="122" class="sr adr">[5]</text><rect x="772" y="55" width="62" height="46" class="celr"/><text x="803" y="122" class="sr adr">[6]</text><rect x="834" y="55" width="62" height="46" class="celr"/><text x="865" y="122" class="sr adr">[7]</text><path d="M245,78 C321.45,78 307.55,78 384,78" class="lin"/><polygon points="398,78 384,72 384,84" class="glava"/><path d="M402,150 L402,160 L708,160 L708,150" class="okv" style="stroke-dasharray:none;stroke:#1d5fa8"/><text x="555" y="188" class="sr ime">velicina_ = 5</text><path d="M402,205 L402,215 L894,215 L894,205" class="okv" style="stroke-dasharray:none;stroke:#5b6470"/><text x="648" y="243" class="sr ime">kapacitet_ = 8</text></svg>
+
+- `elementi` — pokazivač na početak bloka
+- `velicina_` i `kapacitet_` — dva broja, uz sam objekat
+
+Prvih `velicina_` polja bloka je sadržaj niza. Ostalih `kapacitet_ - velicina_` je rezerva.
+
+---
+
+<!-- [11] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Niz opisujemo parom (veličina, kapacitet). Koja stanja **nikada** ne smeju da se pojave?
+
+<ul class="opcije">
+<li><b>A</b>(0, 4)</li>
+<li><b>B</b>(5, 4)</li>
+<li><b>C</b>(4, 4)</li>
+<li><b>D</b>(3, 0)</li>
+</ul>
+
+---
+
+<!-- [12] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="netacno">B</span> i <span class="netacno">D</span>: veličina ne sme da bude veća od kapaciteta.
+
+A (prazan niz) i C (pun niz) su sasvim ispravni.
+
+<div class="okvir">
+
+**Invarijanta** (eng. *invariant*) dinamičkog niza: uvek važi
+$0 \le$ `velicina` $\le$ `kapacitet`, `elementi` pokazuje na blok za `kapacitet` elemenata,
+a pozicije $0, \dots,$ `velicina` $-1$ sadrže elemente niza.
+
+</div>
+
+Svaka operacija mora da je očuva — to je naš kriterijum ispravnosti.
+
+---
+
+<!-- [13] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Niz ima veličinu 5 i kapacitet 8. Koliko još elemenata može da se doda **bez nove alokacije**?
+
+<ul class="opcije">
+<li><b>A</b>3</li>
+<li><b>B</b>8</li>
+<li><b>C</b>5</li>
+<li><b>D</b>13</li>
+</ul>
+
+---
+
+<!-- [14] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span> — `kapacitet - velicina` $= 8 - 5 = 3$.
+
+Tek deveti element traži novi blok.
+
+<p class="sitno">B je kapacitet, C je veličina, D je njihov zbir — nijedan od ta tri broja ne odgovara na pitanje „koliko još stane".</p>
+
+---
+
+<!-- [15] Isti kod, drugi tip -->
+## Isti kod, drugi tip
+
+Niz celih brojeva i niz realnih brojeva — razlikuju se u jednoj reči:
+
+<div class="dve">
+<div>
+
+```cpp
+class NizInt {
+    int* elementi;
+    std::size_t velicina_;
+    std::size_t kapacitet_;
+    // ...
+};
+```
+
+</div>
+<div>
+
+```cpp
+class NizDouble {
+    double* elementi;
+    std::size_t velicina_;
+    std::size_t kapacitet_;
+    // ...
+};
+```
+
+</div>
+</div>
+
+I tako za `std::string`, `char`, `Tacka`... — a svaka ispravka se ponavlja u svakoj kopiji.
+
+<p class="sitno">Zato <code>std::vector</code> nije skup ručno napisanih klasa, po jedne za svaki tip.</p>
+
+---
+
+<!-- [16] Šablon: tip kao parametar -->
+## Šablon: tip kao parametar
+
+
+Parametar šablona je **tip**:
+
+```cpp
+template <typename T>                  // T se popunjava pri upotrebi
+class DinamickiNiz { /* ... T* elementi; ... */ };
+```
+
+- jednom napišemo klasu, za `T` upišemo ime tipa kad nam zatreba
+- to je isto što radimo kad napišemo `vector<int>` ili `vector<double>`: ime u uglastim zagradama je tip koji popunjava rupu
+
+---
+
+<!-- [17] Šablon funkcije -->
+<!-- .slide: class="mali" -->
+## Šablon funkcije
+
+Šablon ne mora biti klasa — isto radi i za običnu funkciju:
+
+```cpp
+template <typename T>
+T veci(T a, T b)
+{
+    return a > b ? a : b;
+}
+```
+
+```cpp
+veci(3, 7)                           // 7        T je int
+veci(2.5, 1.5)                       // 2.5      T je double
+veci(std::string("ana"), std::string("marko"))   // marko
+veci<double>(3, 2.5)                 // 3        T zadajemo sami
+```
+
+- kod funkcije prevodilac sam zaključuje `T` iz argumenata; kod klase ga pišemo u `<>`
+- `veci(3, 2.5)` se ne prevodi: `T` ne može istovremeno da bude `int` i `double`
+
+---
+
+<!-- [18] Klasa: tri podatka -->
+<!-- .slide: class="mali" -->
+## Klasa: tri podatka
+
+```cpp
+template <typename T>
+class DinamickiNiz {
+private:
+    T* elementi;
+    std::size_t velicina_;
+    std::size_t kapacitet_;
+
+public:
+    DinamickiNiz(std::size_t pocetni_kapacitet = 4);
+    ~DinamickiNiz();
+
+    std::size_t velicina() const;
+    std::size_t kapacitet() const;
+
+    T& operator[](std::size_t indeks);
+    const T& operator[](std::size_t indeks) const;
+};
+```
+
+<p class="sitno">Podatak i funkcija ne mogu imati isto ime, pa podaci dobijaju donju crtu: <code>velicina_</code>, a funkcija ostaje <code>velicina()</code>. <code>std::size_t</code> je neoznačen ceo tip — kao i u standardnoj biblioteci, koristimo ga za brojeve elemenata i pozicije.</p>
+
+---
+
+<!-- [19] Šablon klase -->
+## Šablon klase
+
+`template <typename T>` — čitaj: „za svaki tip `T`".
+
+```cpp
+DinamickiNiz<int>    a(10);
+DinamickiNiz<double> b(20);
+```
+
+- Prevodilac pravi **dve različite klase**, zamenjujući `T` sa `int`, odnosno `double` — instanciranje šablona (eng. *instantiation*).
+- Sve se razrešava pri prevođenju: nije sporije od ručno napisanog koda.
+- Isto je `std::vector<int>` naspram `std::vector<double>`.
+
+---
+
+<!-- [20] Šta prevodilac radi sa šablonom -->
+## Šta prevodilac radi sa šablonom
+
+<div class="dve">
+<div>
+
+```cpp
+// šablon (jednom napisan)
+template <typename T>
+class DinamickiNiz {
+    T* elementi;
+    // ...
+};
+```
+
+</div>
+<div>
+
+```cpp
+// DinamickiNiz<int> a(10);
+class DinamickiNiz<int> {
+    int* elementi;
+    // ...
+};
+```
+
+</div>
+</div>
+
+Pri svakoj upotrebi `DinamickiNiz<neki_tip>` prevodilac u šablonu zameni `T` tim tipom i dobije običnu klasu. Šablon sam nije tip — tip je tek `DinamickiNiz<int>`.
+
+---
+
+<!-- [21] Šta tip T mora da ume -->
+## Šta tip `T` mora da ume
+
+- `new T[k]` pravi `k` objekata: `T` mora da ima konstruktor bez argumenata
+- elementi se prepisuju dodelom: `T` mora da ima `=`
+- `int`, `double`, `std::string` to umeju
+
+Ako nešto nedostaje, greška se prijavljuje **pri prevođenju**, u trenutku instanciranja.
+
+<p class="sitno">Rezervisani deo bloka zato nije „prazan": sadrži objekte podrazumevane vrednosti. <code>std::vector</code> to izbegava — van okvira kursa.</p>
+
+---
+
+<!-- [22] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+DinamickiNiz<int>    a(4);
+DinamickiNiz<double> b(4);
+b = a;
+```
+
+Šta se dešava?
+
+<ul class="opcije">
+<li><b>A</b><code>int</code> vrednosti se pretvore u <code>double</code></li>
+<li><b>B</b>greška pri prevođenju</li>
+<li><b>C</b>prevodi se, ali program pada</li>
+<li><b>D</b><code>b</code> postaje niz <code>int</code>-ova</li>
+</ul>
+
+---
+
+<!-- [23] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `DinamickiNiz<int>` i `DinamickiNiz<double>` su **dva različita tipa**.
+
+To što je `int` moguće dodeliti `double`-u ne znači da je jedan niz moguće dodeliti drugom.
+
+<div class="sitno">
+
+Isto važi i za `std::vector<int>` i `std::vector<double>`.
+
+</div>
+
+---
+
+<!-- [24] Funkcije van klase -->
+## Funkcije van klase
+
+```cpp
+template <typename T>
+std::size_t DinamickiNiz<T>::velicina() const
+{
+    return velicina_;
+}
+```
+
+- `DinamickiNiz<T>::` — funkcija pripada ovoj klasi, kao `std::` u `std::cout`
+- `const` — ne menja objekat, pa sme da se pozove i nad konstantnim nizom
+- `template <typename T>` se ponavlja ispred svake definicije
+
+---
+
+<!-- [25] Konstruktor -->
+## Konstruktor
+
+```cpp [1-2|3-5|6-7]
+template <typename T>
+DinamickiNiz<T>::DinamickiNiz(std::size_t pocetni_kapacitet)
+    : elementi(new T[pocetni_kapacitet]),
+      velicina_(0),
+      kapacitet_(pocetni_kapacitet)
+{
+}
+```
+
+- Lista iza `:` — *lista inicijalizacije članova* (eng. *member initializer list*)
+- Prazan niz: veličina 0, blok za `pocetni_kapacitet` elemenata
+- Invarijanta važi **od prvog trenutka**
+
+---
+
+<!-- [26] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+DinamickiNiz<int> a(4);
+std::cout << a.velicina() << " " << a.kapacitet();
+```
+
+<ul class="opcije">
+<li><b>A</b><code>4 4</code></li>
+<li><b>B</b><code>0 4</code></li>
+<li><b>C</b><code>0 0</code></li>
+<li><b>D</b><code>4 0</code></li>
+</ul>
+
+---
+
+<!-- [27] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `0 4`: niz je prazan, a prostor za četiri elementa je obezbeđen.
+
+A meša „mesta ima" sa „elemenata ima". D krši invarijantu.
+
+<p class="sitno">Početni kapacitet je argument konstruktora, a ne broj elemenata. Elemente niz dobija tek sa <code>dodaj</code>.</p>
+
+---
+
+<!-- [28] Destruktor -->
+## Destruktor
+
+```cpp
+template <typename T>
+DinamickiNiz<T>::~DinamickiNiz()
+{
+    delete[] elementi;
+}
+```
+
+- Poziva se **automatski** kada objekat prestaje da postoji.
+- Resurs se zauzima u konstruktoru, a oslobađa u destruktoru.
+- Klasa koja alocira, a nema destruktor — gubi memoriju.
+
+---
+
+<!-- [29] Pristup elementu: operator[] -->
+## Pristup elementu: `operator[]`
+
+```cpp
+template <typename T>
+T& DinamickiNiz<T>::operator[](std::size_t indeks)
+{
+    assert(indeks < velicina_);
+    return elementi[indeks];
+}
+```
+
+Sada `a[3] = 17;` radi kao kod običnog niza — *preopterećenje operatora* (eng. *operator overloading*).
+
+---
+
+<!-- [30] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Šta ako funkcija vraća `T` umesto `T&`?
+
+```cpp
+int DinamickiNiz<int>::operator[](std::size_t indeks)   // bez &
+...
+a[3] = 17;
+```
+
+<ul class="opcije">
+<li><b>A</b>radi isto kao ranije</li>
+<li><b>B</b>menja se kopija, niz ostaje isti</li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b>program pada</li>
+</ul>
+
+---
+
+<!-- [31] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — za `int`: *lvalue required as left operand of assignment*.
+
+Funkcija vraća privremenu vrednost, a njoj se ne može dodeliti.
+
+Kad bi `T` bila klasa (na primer `std::string`), prevelo bi se — i izmenila bi se kopija (odgovor B). Ni jedno ni drugo nije ono što želimo.
+
+<div class="okvir">Zato vraćamo <b>referencu</b>: <code>a[3]</code> tada <em>jeste</em> element niza.</div>
+
+---
+
+<!-- [32] Dve verzije operator[] -->
+## Dve verzije `operator[]`
+
+```cpp
+T&       operator[](std::size_t indeks);         // obican objekat
+const T& operator[](std::size_t indeks) const;   // konstantan objekat
+```
+
+```cpp
+void ispisi(const DinamickiNiz<int>& a)
+{
+    std::cout << a[0];   // poziva se const verzija
+    a[0] = 5;            // greska pri prevodjenju
+}
+```
+
+---
+
+<!-- [33] assert: pretpostavka u kodu -->
+## `assert`: pretpostavka u kodu
+
+```cpp
+assert(indeks < velicina_);   // #include <cassert>
+```
+
+- Ako uslov nije ispunjen, program se **prekida** i kaže gde.
+- Indeks mora pokazivati na postojeći element, a ne bilo gde u bloku.
+- Za pravi program: prevođenje sa `-DNDEBUG` uklanja proveru.
+
+| `std::vector` | provera indeksa |
+| --- | --- |
+| `v[i]` | ne proverava |
+| `v.at(i)` | baca izuzetak `std::out_of_range` |
+
+---
+
+<!-- [34] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+DinamickiNiz<int> a(8);
+for (int i = 0; i < 5; ++i)
+    a.dodaj(i);
+
+int x = a[5];
+```
+
+Niz ima veličinu 5 i kapacitet 8. Šta radi poslednji red?
+
+<ul class="opcije">
+<li><b>A</b>vraća 0 — prvo rezervisano polje</li>
+<li><b>B</b>assert prekida program</li>
+<li><b>C</b>vraća 5</li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- [35] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `Assertion 'indeks < velicina_' failed`.
+
+Indeks 5 je unutar bloka od 8 polja, ali **nije** unutar niza. Kapacitet nije sadržaj.
+
+<p class="sitno">Sa <code>-DNDEBUG</code> provere nema, pa bi se pročitalo šta god da stoji u rezervi. <code>std::vector::operator[]</code> ne proverava indeks.</p>
+
+---
+
+<!-- [36] Blok 1 — ukratko -->
+## Blok 1 — ukratko
+
+- Dinamički niz = pokazivač na blok + **veličina** + **kapacitet**
+- Invarijanta: $0 \le$ veličina $\le$ kapacitet, blok dovoljan za kapacitet
+- Šablon: jedna definicija, za svaki tip `T`
+- Konstruktor zauzima, destruktor oslobađa
+- `operator[]` vraća `T&`, a pretpostavku proverava `assert`
+
+<p class="sitno">U knjizi: odeljci „Kapacitet i veličina" i „Klasa dinamičkog niza".</p>
+
+---
+
+<!-- [37] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Veličina, kapacitet i klasa</li>
+<li class="sad">2. Rast niza i cena dodavanja</li>
+<li>3. Umetanje, brisanje, kopiranje</li>
+</ol>
+
+---
+
+<!-- [38] Dodavanje na kraj — lak slučaj -->
+## Dodavanje na kraj — lak slučaj
+
+<div class="niz">
+<span class="ime">elementi</span>
+<span class="c" data-i="0">10</span><span class="c" data-i="1">20</span><span class="c" data-i="2">30</span><span class="c n" data-i="3">40</span><span class="c r" data-i="4"></span><span class="c r" data-i="5"></span>
+</div>
+
+```cpp
+if (velicina_ < kapacitet_) {
+    elementi[velicina_] = vrednost;
+    ++velicina_;
+}
+```
+
+Konstantan broj koraka: $O(1)$.
+
+---
+
+<!-- [39] Kad je blok pun: realokacija -->
+<!-- .slide: data-auto-animate -->
+## Kad je blok pun: realokacija
+
+<div class="niz">
+<span class="ime">stari</span>
+<span data-id="e0" class="c">10</span><span data-id="e1" class="c">20</span><span data-id="e2" class="c">30</span><span data-id="e3" class="c">40</span>
+</div>
+
+`velicina_ == kapacitet_ == 4`, a treba dodati `50`.
+
+---
+
+<!-- [40] Kad je blok pun: realokacija -->
+<!-- .slide: data-auto-animate -->
+## Kad je blok pun: realokacija
+
+<div class="niz">
+<span class="ime">stari</span>
+<span data-id="e0" class="c">10</span><span data-id="e1" class="c">20</span><span data-id="e2" class="c">30</span><span data-id="e3" class="c">40</span>
+</div>
+<div class="niz" data-id="novi">
+<span class="ime">novi</span>
+<span data-id="n0" class="c prazno"></span><span data-id="n1" class="c prazno"></span><span data-id="n2" class="c prazno"></span><span data-id="n3" class="c prazno"></span><span data-id="n4" class="c prazno"></span><span class="c prazno"></span><span class="c prazno"></span><span class="c prazno"></span>
+</div>
+
+**1.** alociraj novi blok, dvostruko veći
+
+---
+
+<!-- [41] Kad je blok pun: realokacija -->
+<!-- .slide: data-auto-animate -->
+## Kad je blok pun: realokacija
+
+<div class="niz">
+<span class="ime">stari</span>
+<span class="c x">10</span><span class="c x">20</span><span class="c x">30</span><span class="c x">40</span>
+</div>
+<div class="niz" data-id="novi">
+<span class="ime">novi</span>
+<span data-id="e0" class="c">10</span><span data-id="e1" class="c">20</span><span data-id="e2" class="c">30</span><span data-id="e3" class="c">40</span><span data-id="n4" class="c prazno"></span><span class="c prazno"></span><span class="c prazno"></span><span class="c prazno"></span>
+</div>
+
+**2.** prenesi postojeće elemente
+
+---
+
+<!-- [42] Kad je blok pun: realokacija -->
+<!-- .slide: data-auto-animate -->
+## Kad je blok pun: realokacija
+
+<div class="niz" data-id="novi">
+<span class="ime">elementi</span>
+<span data-id="e0" class="c">10</span><span data-id="e1" class="c">20</span><span data-id="e2" class="c">30</span><span data-id="e3" class="c">40</span><span data-id="n4" class="c r"></span><span class="c r"></span><span class="c r"></span><span class="c r"></span>
+</div>
+
+**3.** oslobodi stari blok &nbsp; **4.** preusmeri `elementi` &nbsp; **5.** zapamti kapacitet 8
+
+---
+
+<!-- [43] Kad je blok pun: realokacija -->
+<!-- .slide: data-auto-animate -->
+## Kad je blok pun: realokacija
+
+<div class="niz" data-id="novi">
+<span class="ime">elementi</span>
+<span data-id="e0" class="c">10</span><span data-id="e1" class="c">20</span><span data-id="e2" class="c">30</span><span data-id="e3" class="c">40</span><span data-id="n4" class="c n">50</span><span class="c r"></span><span class="c r"></span><span class="c r"></span>
+</div>
+
+Tek sada: upiši `50`, veličina 5, kapacitet 8.
+
+---
+
+<!-- [44] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Šta ako zamenimo redosled: prvo oslobodimo stari blok (korak 3), pa onda prenosimo elemente (korak 2)?
+
+<ul class="opcije">
+<li><b>A</b>ništa, radi isto</li>
+<li><b>B</b>greška pri prevođenju</li>
+<li><b>C</b>čitamo oslobođenu memoriju</li>
+<li><b>D</b>curi memorija</li>
+</ul>
+
+---
+
+<!-- [45] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — kopiramo iz bloka koji više nije naš: **viseći pokazivač**, nedefinisano ponašanje.
+
+Sanitajzer: `heap-use-after-free`. Najgore od svega: program *može* i da „proradi" na tvom računaru.
+
+<div class="okvir">Pravilo: staro oslobodi tek kad novo postoji i popunjeno je.</div>
+
+---
+
+<!-- [46] Pišemo zajedno: povecaj_kapacitet -->
+## Pišemo zajedno: `povecaj_kapacitet`
+
+```cpp
+template <typename T>
+void DinamickiNiz<T>::povecaj_kapacitet()
+{
+    // ovde pisemo realokaciju
+}
+```
+
+Pet koraka sa prethodnih slajdova — redom, red po red.
+
+---
+
+<!-- [47] povecaj_kapacitet -->
+<!-- .slide: class="mali" -->
+## `povecaj_kapacitet`
+
+```cpp [4|6|8-9|11|13-14]
+template <typename T>
+void DinamickiNiz<T>::povecaj_kapacitet()
+{
+    std::size_t novi_kapacitet = 2 * kapacitet_;
+
+    T* novi = new T[novi_kapacitet];
+
+    for (std::size_t i = 0; i < velicina_; ++i)
+        novi[i] = elementi[i];
+
+    delete[] elementi;
+
+    elementi = novi;
+    kapacitet_ = novi_kapacitet;
+}
+```
+
+<p class="sitno">Pomoćna funkcija — korisnik ne treba da je poziva, pa ide u <code>private</code>.</p>
+
+---
+
+<!-- [48] dodaj -->
+## `dodaj`
+
+```cpp
+template <typename T>
+void DinamickiNiz<T>::dodaj(const T& vrednost)
+{
+    if (velicina_ == kapacitet_)
+        povecaj_kapacitet();
+
+    elementi[velicina_] = vrednost;
+    ++velicina_;
+}
+```
+
+U `std::vector` ovo je `push_back`.
+
+---
+
+<!-- [49] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+```cpp
+DinamickiNiz<int> a(4);
+for (int i = 0; i < 9; ++i)
+    a.dodaj(i);
+std::cout << a.velicina() << " " << a.kapacitet();
+```
+
+<ul class="opcije">
+<li><b>A</b><code>9 9</code></li>
+<li><b>B</b><code>9 12</code></li>
+<li><b>C</b><code>9 16</code></li>
+<li><b>D</b><code>9 8</code></li>
+</ul>
+
+---
+
+<!-- [50] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — `9 16`
+
+Peto dodavanje: kapacitet 4 → 8. Deveto dodavanje: 8 → 16.
+
+<p class="sitno">A: kapacitet ne raste za jedan. B: raste udvostručavanjem, ne za konstantu. D: u nizu od 8 mesta ne mogu da stanu 9 elemenata — invarijanta.</p>
+
+---
+
+<!-- [51] Pitanje — pokrećemo -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje — pokrećemo</span>
+
+```cpp
+std::vector<int> v;
+std::size_t poslednji = 0;
+for (int i = 0; i < 20; ++i) {
+    v.push_back(i);
+    if (v.capacity() != poslednji) {
+        poslednji = v.capacity();
+        std::cout << poslednji << " ";
+    }
+}
+```
+
+Šta ispisuje (g++)?
+
+---
+
+<!-- [52] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+```text
+1 2 4 8 16 32
+```
+
+g++ (libstdc++) udvostručava, počev od 1.
+
+Standard ne propisuje činilac rasta; druge implementacije mogu da biraju drugi (na primer 1,5).
+
+---
+
+<!-- [53] Dopisujemo: reserve -->
+## Dopisujemo: `v.reserve(20);`
+
+Isti program, jedan red više — pre petlje:
+
+```cpp
+std::vector<int> v;
+v.reserve(20);
+```
+
+```text
+20
+```
+
+- `reserve` obezbeđuje kapacitet unapred: jedna alokacija umesto šest.
+- Veličina ostaje 0 — kapacitet nije sadržaj.
+
+---
+
+<!-- [54] Koliko košta dodavanje? -->
+## Koliko košta dodavanje?
+
+- Ima mesta: $O(1)$
+- Nema mesta: prenose se svi elementi — $O(n)$
+
+Da li je dinamički niz time propao?
+
+<p class="fragment">Ne gledamo najgoru <b>jednu</b> operaciju, već ukupnu cenu <b>niza</b> operacija.</p>
+
+<div class="fragment okvir">
+
+**Amortizovana analiza** (eng. *amortized analysis*): ako $n$ operacija ukupno košta $T(n)$, amortizovana cena jedne je $T(n)/n$.
+
+Nije prosečan slučaj: nema slučajnosti, ograničavamo **najgori** niz operacija.
+
+</div>
+
+---
+
+<!-- [55] Kako izgleda cena svakog dodavanja -->
+## Kako izgleda cena svakog dodavanja
+
+<div class="centar">
+<svg viewBox="0 0 760 300" width="760" height="300" class="graf" role="img" aria-label="Cena svakog dodavanja"><line x1="40" y1="260" x2="755" y2="260" class="osa"/><rect x="42.0" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="63.7" y="246.1" width="17.5" height="13.9" class="skupo"/><text x="72.5" y="240.1" class="lab">2</text><rect x="85.5" y="239.1" width="17.5" height="20.9" class="skupo"/><text x="94.2" y="233.1" class="lab">3</text><rect x="107.2" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="128.9" y="225.2" width="17.5" height="34.8" class="skupo"/><text x="137.7" y="219.2" class="lab">5</text><rect x="150.7" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="172.4" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="194.1" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="215.9" y="197.3" width="17.5" height="62.7" class="skupo"/><text x="224.6" y="191.3" class="lab">9</text><rect x="237.6" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="259.3" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="281.1" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="302.8" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="324.5" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="346.3" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="368.0" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="389.8" y="141.5" width="17.5" height="118.5" class="skupo"/><text x="398.5" y="135.5" class="lab">17</text><rect x="411.5" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="433.2" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="455.0" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="476.7" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="498.4" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="520.2" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="541.9" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="563.6" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="585.4" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="607.1" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="628.8" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="650.6" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="672.3" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="694.0" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="715.8" y="253.0" width="17.5" height="7.0" class="jeftino"/><rect x="737.5" y="30.0" width="17.5" height="230.0" class="skupo"/><text x="746.2" y="24.0" class="lab">33</text><text x="50.8" y="282" class="lab">1</text><text x="202.9" y="282" class="lab">8</text><text x="376.8" y="282" class="lab">16</text><text x="550.6" y="282" class="lab">24</text><text x="746.2" y="282" class="lab">33</text><text x="380" y="298" class="lab">redni broj dodavanja</text></svg>
+</div>
+
+Početni kapacitet 1, udvostručavanje. Crveno: dodavanje sa realokacijom (broj upisa).
+
+33 dodavanja ukupno koštaju **96** upisa — manje od $3n$.
+
+---
+
+<!-- [56] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Niz ima kapacitet 1 i udvostručava se pri svakoj realokaciji. Dodajemo 17 elemenata. Koliko je ukupno realokacija?
+
+<ul class="opcije">
+<li><b>A</b>17</li>
+<li><b>B</b>9</li>
+<li><b>C</b>5</li>
+<li><b>D</b>2</li>
+</ul>
+
+---
+
+<!-- [57] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — pri dodavanju 2, 3, 5, 9 i 17. element: kapaciteti $1 \to 2 \to 4 \to 8 \to 16 \to 32$.
+
+Ukupno se prenese $1 + 2 + 4 + 8 + 16 = 31$ elemenata — manje od $2 \cdot 17$.
+
+<p class="sitno">A je odgovor onoga ko misli da svako dodavanje traži novi blok.</p>
+
+---
+
+<!-- [58] Strategija 1: kapacitet raste za k -->
+## Strategija 1: kapacitet raste za $k$
+
+Kapaciteti: $k, 2k, 3k, \dots$ — pri $i$-toj realokaciji prenosi se $ik$ elemenata.
+
+<div class="f">
+$$T(n) = \underbrace{n}_{\text{upisi}} + \underbrace{k + 2k + \dots + (m-1)k}_{\text{prenosi},\; m = n/k}$$
+</div>
+
+<div class="f">
+$$= \frac{n^2}{2k} + \frac{n}{2} = O(n^2)$$
+</div>
+
+Amortizovano: $O(n)$ po dodavanju.
+
+<div class="fragment okvir">Veće <i>k</i> samo deli cenu konstantom. Red veličine ostaje isti — kao što veći statički niz samo odlaže problem.</div>
+
+---
+
+<!-- [59] Strategija 2: kapacitet raste q puta -->
+## Strategija 2: kapacitet raste $q$ puta
+
+Kapaciteti: $1, 2, 4, 8, \dots, n$ (za $q = 2$).
+
+Svi prenosi zajedno: $1 + 2 + 4 + \dots + n/2 < n$
+
+Plus $n$ upisa novih elemenata: $T(n) < 2n = O(n)$
+
+<div class="okvir">
+
+Amortizovana cena dodavanja: **$O(1)$**. Za opšte $q > 1$: $T(n) \approx \frac{q}{q-1} n$.
+
+</div>
+
+<p class="sitno">Izvod sa geometrijskom sumom: knjiga, odeljak „Rast za konstantan činilac".</p>
+
+---
+
+<!-- [60] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Dodajemo **1 000 000** elemenata. Koliko je ukupno upisa u memoriju?
+
+<div class="dve">
+<div>
+
+**+100 mesta** pri svakoj realokaciji
+
+</div>
+<div>
+
+**×2** pri svakoj realokaciji, početni kapacitet 4
+
+</div>
+</div>
+
+<ul class="opcije">
+<li><b>A</b>oko 2 miliona i oko 2 miliona</li>
+<li><b>B</b>oko 10 miliona i oko 2 miliona</li>
+<li><b>C</b>oko 5 milijardi i oko 2 miliona</li>
+<li><b>D</b>oko 5 milijardi i oko 20 miliona</li>
+</ul>
+
+---
+
+<!-- [61] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span>
+
+| strategija | ukupno upisa | po elementu |
+| --- | ---: | ---: |
+| +100 | 5 000 500 000 | ≈ 5000 |
+| ×2 | 2 048 572 | ≈ 2 |
+
+Razlika od **2500 puta** — samo zbog načina na koji raste kapacitet.
+
+---
+
+<!-- [62] Pokrećemo: brojimo upise -->
+## Pokrećemo: brojimo upise
+
+```cpp
+if (velicina == kapacitet) {
+    upisi += velicina;       // prenos pri realokaciji
+    kapacitet *= 2;
+}
+++upisi;                     // upis novog elementa
+++velicina;
+```
+
+```text
++100: 5000500000
+x2: 2048572
+```
+
+Brojači umesto pravog niza: računamo samo koliko je upisa bilo.
+
+---
+
+<!-- [63] Dopisujemo: činilac 1,5 -->
+## Dopisujemo: činilac 1,5
+
+U drugoj petlji `kapacitet *= 2;` zamenimo sa:
+
+```cpp
+kapacitet += kapacitet / 2;
+```
+
+```text
+x2: 3099747
+```
+
+Oko $3n$ upisa — kao što kaže $\frac{q}{q-1} n$ za $q = 1{,}5$.
+
+(Natpis u ispisu ostaje „x2" dok ga ne promenimo.)
+
+---
+
+<!-- [64] Koliki činilac q -->
+## Koliki činilac $q$?
+
+- Veće $q$: ređe realokacije, ali više prazne memorije (pri $q=2$, posle rasta je blok tek napola pun)
+- Manje $q$: štedi memoriju, češće prenosi
+
+Svako $q > 1$ daje amortizovano $O(1)$. Izbor je kompromis vreme–memorija.
+
+Standard propisuje samo amortizovano $O(1)$ za `push_back`. Činilac bira implementacija.
+
+---
+
+<!-- [65] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Jedno dodavanje u dugom nizu povremeno košta $O(n)$. Zašto je dodavanje na kraj ipak amortizovano $O(1)$?
+
+<ul class="opcije">
+<li><b>A</b>jer je za slučajan ulaz u proseku uvek jeftino</li>
+<li><b>B</b>jer su skupa dodavanja dovoljno retka da ukupna cena $n$ dodavanja ostaje $O(n)$</li>
+<li><b>C</b>jer se prenos elemenata obavlja istovremeno sa dodavanjem</li>
+<li><b>D</b>jer realokacija zapravo košta $O(1)$</li>
+</ul>
+
+---
+
+<!-- [66] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — kapacitet se udvostručava, pa se posle skupog dodavanja dugo ne dešava ništa skupo.
+
+A je zabluda: amortizovana analiza **nije** prosečan slučaj. Ne pretpostavlja nikakvu raspodelu ulaza — ograničava ukupnu cenu **najgoreg** niza operacija.
+
+<div class="okvir">Najgori pojedinačni slučaj i cena po operaciji u dugom nizu operacija ne moraju biti istog reda.</div>
+
+---
+
+<!-- [67] Zamka -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Zamka</span>
+
+Invarijanta dozvoljava kapacitet 0. Šta se dešava ovde?
+
+```cpp
+DinamickiNiz<int> a(0);
+a.dodaj(1);
+```
+
+Pogledaj ponovo `povecaj_kapacitet`.
+
+---
+
+<!-- [68] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+`2 * 0 == 0` — „novi" blok opet ima kapacitet 0, a `dodaj` upisuje u `elementi[0]`: **upis van bloka**.
+
+Sanitajzer: `heap-buffer-overflow`.
+
+Ispravka je jedan red, na primer:
+
+```cpp
+std::size_t novi_kapacitet = kapacitet_ == 0 ? 1 : 2 * kapacitet_;
+```
+
+---
+
+<!-- [69] Blok 2 — ukratko -->
+## Blok 2 — ukratko
+
+- Pun blok → **realokacija**: novi blok, prenos, oslobađanje starog
+- Redosled je bitan: staro se oslobađa poslednje
+- Jedna realokacija košta $O(n)$, ali je retka
+- Rast za konstantu $k$: $O(n)$ amortizovano — loše
+- Rast za činilac $q>1$: **$O(1)$ amortizovano**
+
+<p class="sitno">U knjizi: odeljak „Rast niza i cena dodavanja elemenata", sa izvodom za obe strategije.</p>
+
+---
+
+<!-- [70] Plan -->
+## Plan
+
+<ol class="mapa">
+<li class="gotovo">1. Veličina, kapacitet i klasa</li>
+<li class="gotovo">2. Rast niza i cena dodavanja</li>
+<li class="sad">3. Umetanje, brisanje, kopiranje</li>
+</ol>
+
+---
+
+<!-- [71] Umetanje: umetni(2, x) -->
+<!-- .slide: data-auto-animate -->
+## Umetanje: `umetni(2, x)`
+
+<div class="niz">
+<span class="ime">elementi</span>
+<span data-id="u0" class="c" data-i="0">a0</span><span data-id="u1" class="c" data-i="1">a1</span><span data-id="u2" class="c" data-i="2">a2</span><span data-id="u3" class="c" data-i="3">a3</span><span data-id="u4" class="c" data-i="4">a4</span><span class="c r" data-i="5"></span><span class="c r" data-i="6"></span>
+</div>
+
+Pozicije su određene indeksima. Da bi `x` stao na poziciju 2, mesto mora prvo da se oslobodi.
+
+---
+
+<!-- [72] Umetanje: umetni(2, x) -->
+<!-- .slide: data-auto-animate -->
+## Umetanje: `umetni(2, x)`
+
+<div class="niz">
+<span class="ime">elementi</span>
+<span data-id="u0" class="c" data-i="0">a0</span><span data-id="u1" class="c" data-i="1">a1</span><span class="c prazno" data-i="2"></span><span data-id="u2" class="c" data-i="3">a2</span><span data-id="u3" class="c" data-i="4">a3</span><span data-id="u4" class="c" data-i="5">a4</span><span class="c r" data-i="6"></span>
+</div>
+
+Svi od pozicije 2 do kraja pomeraju se za jedno mesto udesno.
+
+---
+
+<!-- [73] Umetanje: umetni(2, x) -->
+<!-- .slide: data-auto-animate -->
+## Umetanje: `umetni(2, x)`
+
+<div class="niz">
+<span class="ime">elementi</span>
+<span data-id="u0" class="c" data-i="0">a0</span><span data-id="u1" class="c" data-i="1">a1</span><span class="c n" data-i="2">x</span><span data-id="u2" class="c" data-i="3">a2</span><span data-id="u3" class="c" data-i="4">a3</span><span data-id="u4" class="c" data-i="5">a4</span><span class="c r" data-i="6"></span>
+</div>
+
+Tek onda upis `x`. Veličina 6.
+
+---
+
+<!-- [74] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Neko je pomeranje napisao **sleva nadesno**. Niz je `1 2 3 4 5`, umeće se `9` na poziciju 2.
+
+```cpp
+for (std::size_t i = indeks; i < velicina_; ++i)
+    elementi[i + 1] = elementi[i];
+elementi[indeks] = vrednost;
+```
+
+<ul class="opcije">
+<li><b>A</b><code>1 2 9 3 4 5</code></li>
+<li><b>B</b><code>1 2 9 3 3 3</code></li>
+<li><b>C</b><code>1 2 9 9 9 9</code></li>
+<li><b>D</b><code>1 2 3 9 4 5</code></li>
+</ul>
+
+---
+
+<!-- [75] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">B</span> — `1 2 9 3 3 3`
+
+Prvi upis prepiše `4` pre nego što je pomeren, pa se `3` umnoži kroz ostatak niza.
+
+<div class="okvir">Pri umetanju pomeramo <b>od kraja</b> ka mestu umetanja.</div>
+
+---
+
+<!-- [76] umetni -->
+<!-- .slide: class="mali" -->
+## `umetni`
+
+```cpp [4|6-7|9-10|12-13]
+template <typename T>
+void DinamickiNiz<T>::umetni(std::size_t indeks, const T& vrednost)
+{
+    assert(indeks <= velicina_);
+
+    if (velicina_ == kapacitet_)
+        povecaj_kapacitet();
+
+    for (std::size_t i = velicina_; i > indeks; --i)
+        elementi[i] = elementi[i - 1];
+
+    elementi[indeks] = vrednost;
+    ++velicina_;
+}
+```
+
+<p class="sitno"><code>&lt;=</code>, a ne <code>&lt;</code>: umetanje na poziciju <code>velicina_</code> je dodavanje na kraj.</p>
+
+---
+
+<!-- [77] obrisi -->
+## `obrisi`
+
+```cpp
+template <typename T>
+void DinamickiNiz<T>::obrisi(std::size_t indeks)
+{
+    assert(indeks < velicina_);
+
+    for (std::size_t i = indeks; i + 1 < velicina_; ++i)
+        elementi[i] = elementi[i + 1];
+
+    --velicina_;
+}
+```
+
+Pomeranje ulevo, ovoga puta od mesta brisanja ka kraju.
+
+Zašto `i + 1 < velicina_`, a ne `i < velicina_ - 1`?
+
+---
+
+<!-- [78] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Ispis niza unazad:
+
+```cpp
+int a[3] = {1, 2, 3};
+std::size_t n = 3;
+for (std::size_t i = n - 1; i >= 0; --i)
+    std::cout << a[i];
+```
+
+<ul class="opcije">
+<li><b>A</b><code>321</code></li>
+<li><b>B</b><code>32</code></li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b><code>321</code> pa smeće, beskonačno</li>
+</ul>
+
+---
+
+<!-- [79] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">D</span> — `std::size_t` je **bez znaka**, pa je `i >= 0` uvek tačno.
+
+Posle `i = 0`, `--i` daje 18446744073709551615, i čita se daleko izvan niza.
+
+`-Wall -Wextra` upozorava: *comparison of unsigned expression in '>= 0' is always true*.
+
+<div class="okvir">Prevodite sa <code>-Wall -Wextra</code> i čitajte upozorenja.</div>
+
+---
+
+<!-- [80] Kapacitet se ne smanjuje -->
+## Kapacitet se ne smanjuje
+
+Posle `obrisi` veličina je manja, a blok i kapacitet ostaju isti.
+
+<p class="fragment">Zašto ne bismo smanjili blok čim je napola prazan?</p>
+
+<p class="fragment">Niz oko granice: <code>dodaj</code>, <code>obrisi</code>, <code>dodaj</code>, <code>obrisi</code>… — realokacija pri <b>svakoj</b> operaciji, $O(n)$ svaki put.</p>
+
+---
+
+<!-- [81] Koliko šta košta -->
+## Koliko šta košta
+
+| operacija | složenost |
+| --- | ---: |
+| pristup i izmena po indeksu | <span class="fragment">$O(1)$</span> |
+| dodavanje na kraj | <span class="fragment">amortizovano $O(1)$</span> |
+| uklanjanje sa kraja | <span class="fragment">$O(1)$</span> |
+| umetanje / brisanje na poziciji | <span class="fragment">$O(n)$</span> |
+| pretraga u neuređenom nizu | <span class="fragment">$O(n)$</span> |
+
+<p class="fragment">Skupo umetanje nije do implementacije, već do odluke da elementi budu <b>uzastopni</b>.</p>
+
+---
+
+<!-- [82] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Dodajemo $n$ elemenata, svaki na **početak** niza:
+
+```cpp
+for (int i = 0; i < n; ++i)
+    a.umetni(0, i);
+```
+
+Kolika je ukupna cena?
+
+<ul class="opcije">
+<li><b>A</b>$O(n)$</li>
+<li><b>B</b>$O(n \log n)$</li>
+<li><b>C</b>$O(n^2)$</li>
+<li><b>D</b>amortizovano $O(1)$ po umetanju</li>
+</ul>
+
+---
+
+<!-- [83] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — $O(n^2)$
+
+Pri $i$-tom umetanju pomera se $i$ elemenata: $0 + 1 + \dots + (n-1) = \frac{n(n-1)}{2}$.
+
+Za $n = 100\,000$ to je 4 999 950 000 pomeranja.
+
+<p class="sitno">D je zabluda: amortizovana ocena važi za <b>realokaciju</b>. Pomeranje se plaća pri svakom umetanju, i kad slobodnog mesta ima napretek.</p>
+
+---
+
+<!-- [84] Pokrećemo: kraj naspram početka -->
+## Pokrećemo: kraj naspram početka
+
+```cpp
+for (int i = 0; i < n; ++i) a.push_back(i);
+for (int i = 0; i < n; ++i) b.insert(b.begin(), i);
+```
+
+```text
+na kraj:    oko 2 ms
+na pocetak: oko 400 ms          (n = 100000)
+```
+
+Dopisujemo: `n = 200000` — vreme umetanja na početak raste oko 3–4 puta, a dodavanje na kraj i dalje jedva da se vidi.
+
+<p class="sitno">Na našem računaru, bez optimizacije (<code>-O0</code>); tačni brojevi zavise od računara.</p>
+
+---
+
+<!-- [85] Kopiranje -->
+## Kopiranje
+
+```cpp
+DinamickiNiz<int> a(4);
+a.dodaj(10);
+a.dodaj(20);
+a.dodaj(30);
+
+DinamickiNiz<int> b = a;
+```
+
+Ako ne napišemo ništa, prevodilac kopira **član po član**.
+
+`velicina_` i `kapacitet_` — u redu. A `elementi`?
+
+---
+
+<!-- [86] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Klasa **bez** konstruktora kopije:
+
+```cpp
+DinamickiNiz<int> b = a;    // a sadrzi 10 20 30
+b[0] = 42;
+std::cout << a[0];
+```
+
+<ul class="opcije">
+<li><b>A</b><code>10</code></li>
+<li><b>B</b><code>42</code></li>
+<li><b>C</b>greška pri prevođenju</li>
+<li><b>D</b><code>42</code>, pa program pada na kraju</li>
+</ul>
+
+---
+
+<!-- [87] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">D</span> — plitko kopiranje (eng. *shallow copy*)
+
+<svg viewBox="0 0 900 260" class="kop" role="img" aria-label="Plitko kopiranje: oba objekta pokazuju na isti blok" style="max-height:300px"><rect x="20" y="10" width="250" height="100" rx="8" class="obj"/><text x="35" y="40" class="naslov">a</text><text x="35" y="70">elementi  ●</text><text x="35" y="96">3 / 4</text><rect x="20" y="145" width="250" height="100" rx="8" class="obj"/><text x="35" y="175" class="naslov">b</text><text x="35" y="205">elementi  ●</text><text x="35" y="231">3 / 4</text><path d="M175,64 C355.95,64 323.05,128 504,128" class="lin"/><polygon points="518,128 504,122 504,134" class="glava"/><path d="M175,199 C355.95,199 323.05,140 504,140" class="lin"/><polygon points="518,140 504,134 504,146" class="glava"/><rect x="520" y="100" width="80" height="64" class="cel"/><text x="560" y="140" class="sr">42</text><rect x="600" y="100" width="80" height="64" class="cel"/><text x="640" y="140" class="sr">20</text><rect x="680" y="100" width="80" height="64" class="cel"/><text x="720" y="140" class="sr">30</text><rect x="760" y="100" width="80" height="64" class="celr"/></svg>
+
+- Menja se `b`, a menja se i `a`.
+- Na kraju **oba** destruktora rade `delete[]` nad istom adresom — dupli `delete`.
+
+---
+
+<!-- [88] Duboko kopiranje: konstruktor kopije -->
+<!-- .slide: class="mali" -->
+## Duboko kopiranje: konstruktor kopije
+
+```cpp [2|3-5|7-8]
+template <typename T>
+DinamickiNiz<T>::DinamickiNiz(const DinamickiNiz<T>& drugi)
+    : elementi(new T[drugi.kapacitet_]),
+      velicina_(drugi.velicina_),
+      kapacitet_(drugi.kapacitet_)
+{
+    for (std::size_t i = 0; i < velicina_; ++i)
+        elementi[i] = drugi.elementi[i];
+}
+```
+
+Svaki objekat dobija **svoj** blok — duboko kopiranje (eng. *deep copy*).
+
+<p class="sitno">Parametar je <code>const&amp;</code>: prenos po vrednosti bi zahtevao kopiju — upravo ono što tek definišemo.</p>
+
+---
+
+<!-- [89] Duboko kopiranje: svako svoj blok -->
+## Duboko kopiranje: svako svoj blok
+
+<svg viewBox="0 0 900 260" class="kop" role="img" aria-label="Duboko kopiranje: svaki objekat ima svoj blok" style="max-height:300px"><rect x="20" y="10" width="250" height="100" rx="8" class="obj"/><text x="35" y="40" class="naslov">a</text><text x="35" y="70">elementi  ●</text><text x="35" y="96">3 / 4</text><rect x="20" y="145" width="250" height="100" rx="8" class="obj"/><text x="35" y="175" class="naslov">b</text><text x="35" y="205">elementi  ●</text><text x="35" y="231">3 / 4</text><path d="M175,64 C355.95,64 323.05,60 504,60" class="lin"/><polygon points="518,60 504,54 504,66" class="glava"/><path d="M175,199 C355.95,199 323.05,200 504,200" class="lin"/><polygon points="518,200 504,194 504,206" class="glava"/><rect x="520" y="28" width="80" height="64" class="cel"/><text x="560" y="68" class="sr">10</text><rect x="600" y="28" width="80" height="64" class="cel"/><text x="640" y="68" class="sr">20</text><rect x="680" y="28" width="80" height="64" class="cel"/><text x="720" y="68" class="sr">30</text><rect x="760" y="28" width="80" height="64" class="celr"/><rect x="520" y="168" width="80" height="64" class="cel"/><text x="560" y="208" class="sr">42</text><rect x="600" y="168" width="80" height="64" class="cel"/><text x="640" y="208" class="sr">20</text><rect x="680" y="168" width="80" height="64" class="cel"/><text x="720" y="208" class="sr">30</text><rect x="760" y="168" width="80" height="64" class="celr"/></svg>
+
+`b[0] = 42` sada menja samo `b`, a svaki destruktor oslobađa svoj blok.
+
+---
+
+<!-- [90] Kopija ili dodela? -->
+## Kopija ili dodela?
+
+```cpp
+DinamickiNiz<int> b = a;   // b nastaje sada   -> konstruktor kopije
+
+DinamickiNiz<int> c(20);
+c = a;                     // c vec postoji     -> operator dodele
+```
+
+Kod dodele `c` već ima svoj blok — on mora da se oslobodi.
+
+---
+
+<!-- [91] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Konstruktor kopije ispisuje `K`, operator dodele ispisuje `D`.
+
+```cpp
+void f(DinamickiNiz<int> x) { }
+void g(const DinamickiNiz<int>& x) { }
+
+DinamickiNiz<int> a(3);
+DinamickiNiz<int> b(a);
+DinamickiNiz<int> c = a;
+DinamickiNiz<int> d(2);
+d = a;
+std::cout << "| ";
+f(a);
+g(a);
+```
+
+<ul class="opcije">
+<li><b>A</b><code>K K D | K</code></li>
+<li><b>B</b><code>K D D | K K</code></li>
+<li><b>C</b><code>K K D | K K</code></li>
+<li><b>D</b><code>K K K | K</code></li>
+</ul>
+
+---
+
+<!-- [92] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">A</span> — `K K D | K`
+
+- `b(a)` i `c = a` — oba **prave novi** objekat: konstruktor kopije (iako u drugom piše `=`).
+- `d = a` — `d` već postoji: operator dodele.
+- `f(a)` — parametar po vrednosti je **nova kopija**: `K`.
+- `g(a)` — referenca, kopije nema.
+
+<div class="okvir">Prenos po vrednosti poziva konstruktor kopije. Zato su veliki objekti <code>const T&amp;</code>.</div>
+
+---
+
+<!-- [93] Operator dodele -->
+<!-- .slide: class="mali" -->
+## Operator dodele
+
+```cpp [4-5|7-10|12|14-16|18]
+template <typename T>
+DinamickiNiz<T>& DinamickiNiz<T>::operator=(const DinamickiNiz<T>& drugi)
+{
+    if (this == &drugi)
+        return *this;
+
+    T* novi = new T[drugi.kapacitet_];
+
+    for (std::size_t i = 0; i < drugi.velicina_; ++i)
+        novi[i] = drugi.elementi[i];
+
+    delete[] elementi;
+
+    elementi = novi;
+    velicina_ = drugi.velicina_;
+    kapacitet_ = drugi.kapacitet_;
+
+    return *this;
+}
+```
+
+<p class="sitno">Isti redosled kao kod realokacije: novi blok, prenos, pa tek onda <code>delete[]</code>. Vraća se <code>*this</code> da bi radilo <code>a = b = c</code>.</p>
+
+---
+
+<!-- [94] Pitanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Pitanje</span>
+
+Obrišemo prve dve linije tela (proveru `this == &drugi`) i izvršimo `a = a;`. Šta se dešava **u ovoj verziji** operatora?
+
+<ul class="opcije">
+<li><b>A</b>čita se oslobođena memorija</li>
+<li><b>B</b>dupli <code>delete</code></li>
+<li><b>C</b>radi ispravno, samo nepotrebno kopira</li>
+<li><b>D</b>greška pri prevođenju</li>
+</ul>
+
+---
+
+<!-- [95] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+<span class="tacno">C</span> — kopira se iz `elementi` u `novi` **pre** nego što se `elementi` oslobodi.
+
+Da je `delete[]` na početku funkcije, odgovor bi bio A (`heap-use-after-free`).
+
+<div class="okvir">Dobar redosled štiti i od samododele. Provera <code>this == &amp;drugi</code> ovde samo štedi posao.</div>
+
+---
+
+<!-- [96] Pravilo trojke -->
+## Pravilo trojke
+
+Kada klasa sama upravlja memorijom, potrebne su joj **sve tri**:
+
+| funkcija | odgovara na pitanje |
+| --- | --- |
+| destruktor | kada se blok oslobađa? |
+| konstruktor kopije | kako nastaje nezavisna kopija? |
+| operator dodele | kako se zamenjuje postojeći blok? |
+
+Ako kopiranje nema smisla — zabrani ga:
+
+```cpp
+Klasa(const Klasa&) = delete;
+Klasa& operator=(const Klasa&) = delete;
+```
+
+<p class="sitno">Savremeni C++ dodaje još dve funkcije za premeštanje — „pravilo petorke". Van okvira kursa.</p>
+
+---
+
+<!-- [97] Za razmišljanje -->
+<!-- .slide: data-background-color="#fdf3dc" -->
+<span class="oznaka p">Za razmišljanje</span>
+
+Niz ima veličinu 2 i kapacitet 2. Da li je ovo bezbedno?
+
+```cpp
+a.dodaj(a[0]);
+```
+
+Prati šta se dešava sa referencom `vrednost` unutar `dodaj`.
+
+---
+
+<!-- [98] Odgovor -->
+<!-- .slide: data-background-color="#e6f3ea" -->
+<span class="oznaka o">Odgovor</span>
+
+**Nije.** `vrednost` je referenca na element **starog** bloka.
+
+1. `povecaj_kapacitet` prenese elemente i oslobodi stari blok
+2. `elementi[velicina_] = vrednost;` čita iz oslobođene memorije
+
+Sanitajzer: `heap-use-after-free`.
+
+`std::vector::push_back` ovaj slučaj ispravno rešava — jedna od stvari koje standardna biblioteka radi umesto nas.
+
+---
+
+<!-- [99] DinamickiNiz i std::vector -->
+## `DinamickiNiz` i `std::vector`
+
+| `DinamickiNiz<T>` | `std::vector<T>` |
+| --- | --- |
+| `velicina()` | `size()` |
+| `kapacitet()` | `capacity()` |
+| `dodaj(x)` | `push_back(x)` |
+| `umetni(i, x)` | `insert(...)` |
+| `obrisi(i)` | `erase(...)` |
+| `operator[]` uz `assert` | `operator[]`, `at(i)` |
+
+<p class="sitno"><code>insert</code> i <code>erase</code> ne primaju indeks, već iterator — o tome u glavi o povezanim listama.</p>
+
+---
+
+<!-- [100] Kada je vector pravi izbor -->
+## Kada je `vector` pravi izbor?
+
+- pristup po indeksu, obilazak redom
+- kolekcija raste na kraju, veličina nije unapred poznata
+
+Kada nije:
+
+- često umetanje ili brisanje **na početku ili u sredini** velike kolekcije
+
+<div class="okvir">Ne pitaj šta struktura <em>podržava</em> — <code>vector</code> podržava i umetanje na početak. Pitaj koliko koštaju operacije koje radiš <b>često</b>.</div>
+
+---
+
+<!-- [101] Glava 3 — ukratko -->
+## Glava 3 — ukratko
+
+1. Veličina ≠ kapacitet; invarijanta vezuje pokazivač, veličinu i kapacitet
+2. Pun blok → realokacija; staro se oslobađa poslednje
+3. Rast za činilac → dodavanje na kraj **amortizovano $O(1)$**
+4. Umetanje i brisanje u sredini: $O(n)$, zbog uzastopnosti
+5. Klasa koja poseduje memoriju: destruktor, konstruktor kopije, operator dodele
+
+<p class="sitno">Sledeće: povezane liste — umetanje jeftino, pristup po indeksu skup.</p>
+
+</textarea>
+</section>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/markdown/markdown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/math/math.js"></script>
+<script>
+Reveal.initialize({
+  width: 1280,
+  height: 760,
+  margin: 0.05,
+  hash: true,
+  slideNumber: "c/t",
+  transition: "fade",
+  autoAnimateDuration: 0.8,
+  plugins: [RevealMarkdown, RevealHighlight, RevealMath.KaTeX]
+});
+</script>
+</body>
+</html>

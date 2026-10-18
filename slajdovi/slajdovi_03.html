@@ -1778,6 +1778,33 @@ Sanitajzer: `heap-use-after-free`.
 
 ---
 
+
+<!-- [99] Pravilnije: dodaj -->
+
+## Pravilnije: `dodaj`
+
+Vrednost sačuvamo **pre** nego što stari blok nestane:
+
+```cpp
+template <typename T>
+void DinamickiNiz<T>::dodaj(const T& vrednost)
+{
+    if (velicina_ == kapacitet_) {
+        T kopija = vrednost;          // pre realokacije
+        povecaj_kapacitet();
+        elementi[velicina_] = kopija;
+    } else {
+        elementi[velicina_] = vrednost;
+    }
+    ++velicina_;
+}
+```
+
+Sada `a.dodaj(a[0])` radi i kad je niz pun.
+
+
+---
+
 <!-- [99] DinamickiNiz i std::vector -->
 ## `DinamickiNiz` i `std::vector`
 
